@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Sniper Engine v9.6</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --br:#3a5bd9;--br2:#2d47b8;--brs:#eaedfa;
+  --gn:#1e8c4e;--gns:#e6f5ec;
+  --rd:#c0392b;--rds:#faecea;
+  --am:#c07a00;--ams:#fdf3dc;
+  --lv:#c0392b;
+  --s0:#ffffff;--s1:#f5f6fb;--s2:#eceef5;
+  --b0:#e2e5ef;--b1:#cdd1e0;
+  --t0:#191c2d;--t1:#484e6a;--t2:#82889f;
+  --r:14px;--rl:20px;
+  --sh0:0 1px 4px rgba(25,30,60,.07);
+  --sh1:0 4px 16px rgba(25,30,60,.11);
+  --sh2:0 12px 40px rgba(25,30,60,.17);
+  --ease:cubic-bezier(.4,0,.2,1);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{font-family:'IBM Plex Sans',system-ui,sans-serif;background:var(--s1);color:var(--t0);min-height:100vh;font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+h1,h2,h3,b,strong{font-family:'Manrope',sans-serif}
+input,button,select,textarea{font-family:inherit;font-size:inherit}
+button{cursor:pointer;-webkit-appearance:none}
+/* HERO */
+.hero{display:grid;grid-template-columns:46px 1fr auto;align-items:center;gap:14px;background:linear-gradient(135deg,#1c2c9e,#3a2e8d);padding:15px 18px;color:#fff}
+.hero-mark{width:42px;height:42px;background:#fff;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.hero-mark svg{width:24px;height:24px;stroke:#1c2c9e}
+.hero-copy h1{font-size:1.08rem;font-weight:800;letter-spacing:-.01em;line-height:1.2}
+.hero-copy p{font-size:0.66rem;opacity:.7;margin-top:2px;line-height:1.4}
+.hero-clock{text-align:right;flex-shrink:0}
+.hero-clock span{font-size:0.6rem;opacity:.7;display:block}
+.hero-clock b{font-family:'Manrope';font-size:1rem;font-weight:800}
+/* NAV */
+nav{background:var(--s0);border-bottom:1px solid var(--b0);position:sticky;top:0;z-index:100;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch}
+nav::-webkit-scrollbar{display:none}
+.nav-inner{display:inline-flex;padding:0 8px;min-width:100%}
+nav button{border:none;background:transparent;padding:12px 12px;font-size:0.74rem;font-weight:700;color:var(--t2);border-bottom:2.5px solid transparent;white-space:nowrap;display:inline-flex;align-items:center;gap:5px;transition:color .15s,border-color .15s;min-height:44px}
+nav button.active{color:var(--br);border-bottom-color:var(--br)}
+nav button:hover:not(.active){color:var(--t1)}
+.live-tab.has{color:var(--lv)!important}
+.pill{font-size:0.57rem;font-weight:800;padding:2px 5px;border-radius:20px;background:var(--s2);color:var(--t2)}
+nav button.active .pill{background:var(--brs);color:var(--br2)}
+/* LAYOUT */
+.wrap{max-width:880px;margin:0 auto;padding:18px 14px 60px}
+.tab{display:none}.tab.active{display:block}
+.row-between{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.divider{height:1px;background:var(--b0);margin:14px 0}
+/* TYPE */
+.eyebrow{font-size:0.59rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--t2);margin-bottom:4px}
+.h-sec{font-family:'Manrope';font-size:1.2rem;font-weight:800;letter-spacing:-.01em;margin-bottom:14px}
+.sub{font-size:0.75rem;color:var(--t2);line-height:1.5}
+.req{color:var(--rd);font-weight:800}
+/* PANEL */
+.panel{background:var(--s0);border:1px solid var(--b0);border-radius:var(--r);padding:16px;margin-bottom:12px;box-shadow:var(--sh0)}
+.ph{display:flex;align-items:baseline;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.ph h3{font-size:0.88rem;font-weight:800}
+/* TILES */
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:8px;margin-bottom:12px}
+.tile{background:var(--s0);border:1px solid var(--b0);border-radius:12px;padding:12px 14px;box-shadow:var(--sh0)}
+.tile.brand{background:linear-gradient(135deg,var(--br),var(--br2));color:#fff;border:none}
+.tile.live-t{background:var(--rds);border-color:transparent}
+.tile .k{font-size:0.61rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--t2)}
+.tile.brand .k,.tile.brand .m{color:#fff;opacity:.8}
+.tile .v{font-family:'Manrope';font-size:1.44rem;font-weight:800;margin-top:3px;line-height:1}
+.tile .m{font-size:0.64rem;color:var(--t2);margin-top:4px}
+/* FORM */
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.og{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:10px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field.gold>label{color:#7a5f14;font-weight:800}
+.field label{font-size:0.71rem;font-weight:700;color:var(--t1)}
+.field input,.field select{border:1.5px solid var(--b1);border-radius:10px;padding:10px 12px;font-size:0.93rem;background:var(--s0);color:var(--t0);transition:border-color .15s,box-shadow .15s;outline:none;width:100%;min-height:44px}
+.field input:focus,.field select:focus{border-color:var(--br);box-shadow:0 0 0 3px rgba(70,90,210,.12)}
+.tf input{font-size:1.06rem;font-weight:700;font-family:'Manrope';padding:12px 14px;min-height:48px}
+.qo{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.qo button{font-size:0.64rem;font-weight:800;padding:3px 8px;border:1px solid var(--b1);border-radius:6px;background:var(--s1);color:var(--t1);min-height:26px}
+.qo button:active{background:var(--brs);color:var(--br2);border-color:var(--br)}
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 18px;border-radius:10px;font-weight:700;font-size:0.81rem;border:none;min-height:44px;white-space:nowrap;transition:opacity .15s}
+.btn:active{opacity:.8}
+.btn-p{background:var(--br);color:#fff}
+.btn-d{background:var(--rd);color:#fff}
+.btn-lk{background:linear-gradient(135deg,#1c2c9e,#5a38b0);color:#fff}
+.btn-g{background:var(--s1);color:var(--t1);border:1px solid var(--b1)}
+.btn-sm{padding:6px 12px;font-size:0.71rem;border-radius:8px;min-height:36px}
+.btn-bl{width:100%}
+/* TAGS */
+.tag{font-size:0.59rem;font-weight:800;padding:3px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:.04em;display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+.t-up{background:var(--brs);color:var(--br2)}
+.t-lv{background:var(--rds);color:var(--lv)}
+.t-lv::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--lv);animation:pulse 1.3s infinite;flex-shrink:0}
+.t-fin{background:var(--s2);color:var(--t1)}
+.t-won{background:var(--gns);color:var(--gn)}
+.t-lost{background:var(--rds);color:var(--rd)}
+.t-pend{background:var(--ams);color:#6a4e00}
+.tv{background:var(--gns)!important;color:var(--gn)!important}
+.thp{background:var(--ams)!important;color:#6a4e00!important}
+.tlb{background:var(--rds)!important;color:var(--rd)!important}
+.ch{background:var(--gns)!important;color:var(--gn)!important}
+.cm{background:var(--ams)!important;color:#6a4e00!important}
+.cl{background:var(--rds)!important;color:var(--rd)!important}
+.tag-y{font-size:0.57rem;font-weight:800;padding:1px 5px;border-radius:5px;background:var(--brs);color:var(--br2)}
+.tag-e{font-size:0.57rem;font-weight:800;padding:1px 5px;border-radius:5px;background:var(--s2);color:var(--t2)}
+/* PBAR */
+.pbar{display:flex;height:28px;border-radius:8px;overflow:hidden;margin-top:10px;font-size:0.67rem;font-weight:800}
+.pbar>div{display:flex;align-items:center;justify-content:center;color:#fff;min-width:0;transition:width .5s var(--ease)}
+.ph1{background:var(--gn)}.pd1{background:var(--am);color:#4a3400}.pa1{background:var(--rd)}
+/* MARKET GRID */
+.mg{display:grid;grid-template-columns:repeat(auto-fill,minmax(146px,1fr));gap:7px;margin-top:10px}
+.mk{background:var(--s1);border:1px solid var(--b0);border-radius:10px;padding:9px 11px}
+.mk .mn{font-size:0.64rem;color:var(--t1);font-weight:700;line-height:1.3}
+.mk .mp{font-family:'Manrope';font-size:1rem;font-weight:800;margin-top:3px}
+.mk .mo{font-size:0.61rem;color:var(--t2);margin-top:2px}
+.mk.best{background:var(--gns);border-color:var(--gn)}.mk.best .mp{color:var(--gn)}
+.mk.vbrd{border-color:var(--br);box-shadow:0 0 0 1.5px var(--br)}
+.mk.warn-low{opacity:.55;border-style:dashed}
+/* CHIP */
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:0.69rem;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--s1);color:var(--t1);white-space:nowrap}
+.chip.pos{background:var(--gns);color:var(--gn)}.chip.neg{background:var(--rds);color:var(--rd)}
+.chip.warn{background:var(--ams);color:#6a4e00}
+.wb{color:var(--gn);font-weight:800}.lb{color:var(--rd);font-weight:800}
+/* NOTICE */
+.notice{font-size:0.75rem;color:var(--t1);background:var(--s1);border:1px solid var(--b0);border-radius:10px;padding:11px 13px;line-height:1.55}
+/* EMPTY */
+.empty{text-align:center;padding:50px 20px;color:var(--t2)}
+.empty svg{width:40px;height:40px;margin-bottom:12px;opacity:.35}
+.empty h4{font-size:0.96rem;color:var(--t1);margin-bottom:5px}
+.empty p{font-size:0.79rem;max-width:420px;margin:0 auto 14px;line-height:1.5}
+/* SEARCH */
+.sb{position:relative}
+.sr{position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--s0);border:1px solid var(--b1);border-radius:var(--r);box-shadow:var(--sh1);max-height:290px;overflow-y:auto;z-index:50}
+.sr button{display:flex;width:100%;text-align:left;align-items:center;gap:10px;padding:11px 13px;border:none;background:transparent;cursor:pointer;font-family:inherit;border-bottom:1px solid var(--b0)}
+.sr button:last-child{border-bottom:none}
+.sr button:hover,.sr button:active{background:var(--brs)}
+.sr .num{font-family:'Manrope';font-weight:800;color:var(--br);font-size:0.77rem;min-width:22px}
+.hidden{display:none!important}
+/* ACCA LEG */
+.aleg{display:flex;align-items:flex-start;gap:10px;padding:11px 0;border-bottom:1px solid var(--b0)}
+.aleg:last-child{border:none}
+.aleg .lm{margin-left:auto;text-align:right;flex-shrink:0}
+/* CS BARS */
+.csr{display:grid;grid-template-columns:46px 1fr 54px;align-items:center;gap:8px;margin-bottom:5px}
+.css{font-family:'Manrope';font-weight:800;font-size:0.83rem}
+.cst{height:18px;background:var(--s1);border-radius:5px;overflow:hidden}
+.csf{height:100%;border-radius:5px;transition:width .5s var(--ease)}
+.csh{background:var(--gn)}.csd{background:var(--am)}.csa{background:var(--rd)}
+.csp{font-size:0.73rem;font-weight:700;color:var(--t1);text-align:right}
+.csl{display:flex;gap:12px;font-size:0.65rem;color:var(--t2);margin-bottom:8px;flex-wrap:wrap}
+.csl span{display:inline-flex;align-items:center;gap:4px}
+.csl i{width:8px;height:8px;border-radius:2px;display:inline-block}
+/* DIAG GRID */
+.dg{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:8px}
+.dgi{background:var(--s1);border:1px solid var(--b0);border-radius:10px;padding:11px}
+.dgi .k{font-size:0.59rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--t2)}
+.dgi .v{font-family:'Manrope';font-size:1.14rem;font-weight:800;margin-top:4px;line-height:1}
+.dgi .s{font-size:0.67rem;color:var(--t1);margin-top:3px}
+/* VALUE METER */
+.vmtr{height:11px;border-radius:999px;background:linear-gradient(90deg,var(--rd),var(--am),var(--gn));position:relative}
+.vmtr .pin{position:absolute;top:50%;width:17px;height:17px;border-radius:50%;background:var(--br);transform:translate(-50%,-50%);box-shadow:0 0 0 3px var(--s0),0 2px 6px rgba(0,0,0,.2)}
+/* SEG */
+.seg{display:flex;background:var(--s1);border-radius:10px;padding:3px;gap:2px;margin-bottom:14px;overflow-x:auto}
+.seg::-webkit-scrollbar{display:none}
+.seg button{border:none;background:transparent;font-family:inherit;font-size:0.75rem;font-weight:700;color:var(--t1);padding:7px 12px;border-radius:8px;cursor:pointer;white-space:nowrap;min-height:36px}
+.seg button.active{background:var(--s0);color:var(--br);box-shadow:var(--sh0)}
+/* MCARD */
+.mcard{background:var(--s0);border:1px solid var(--b0);border-radius:var(--r);padding:13px 14px;box-shadow:var(--sh0);margin-bottom:10px}
+.mct{display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap}
+.crest{width:33px;height:33px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:'Manrope';font-weight:800;font-size:0.67rem;color:#fff;flex-shrink:0}
+.vt{font-weight:700;font-size:0.87rem;flex:1;min-width:145px}
+.vt small{display:block;color:var(--t2);font-weight:500;font-size:0.67rem;margin-top:1px;line-height:1.4}
+/* RESULT */
+.ri{display:flex;align-items:center;gap:8px}
+.ri input{width:52px;text-align:center;font-family:'Manrope';font-weight:800;font-size:1.03rem;border:1.5px solid var(--b1);border-radius:8px;padding:7px;min-height:42px}
+.ri span{font-weight:800;color:var(--t2);font-size:1.1rem}
+/* DETAIL MKT */
+.dm{display:grid;grid-template-columns:1fr auto auto auto;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--b0);font-size:0.79rem}
+.dm:last-child{border:none}
+.dm .dn{font-weight:700}
+.dm .dr{font-size:0.67rem;font-weight:800;padding:2px 7px;border-radius:5px}
+.dh{background:var(--gns);color:var(--gn)}.dx{background:var(--rds);color:var(--rd)}.dn2{background:var(--s2);color:var(--t2)}
+/* TABLE */
+.tsc{overflow-x:auto;border-radius:var(--r);border:1px solid var(--b0);-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:0.77rem}
+th{text-align:left;font-size:0.61rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--t2);padding:9px 11px;background:var(--s1);border-bottom:1px solid var(--b0);white-space:nowrap}
+td{padding:9px 11px;border-bottom:1px solid var(--b0);white-space:nowrap}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:var(--brs)}
+/* FOOTER */
+.dev-footer{margin-top:32px;padding:22px 16px;text-align:center;border-top:1px solid var(--b0)}
+.dev-crest{display:inline-flex;align-items:center;gap:10px;background:var(--s0);border:1px solid var(--b1);border-radius:40px;padding:8px 18px 8px 10px;box-shadow:var(--sh0)}
+.dev-crest .mk{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--br),#7b3ab0);display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Manrope';font-weight:800;font-size:0.81rem}
+.dev-crest .tx{font-family:'Manrope';font-weight:800;font-size:0.87rem}
+.dev-crest .tx small{display:block;font-family:'IBM Plex Sans';font-weight:600;font-size:0.61rem;color:var(--t2);letter-spacing:.06em;text-transform:uppercase}
+/* MODAL */
+.mo{position:fixed;inset:0;background:rgba(10,15,50,.55);backdrop-filter:blur(4px);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px;animation:fade .2s}
+.mo-box{background:var(--s0);border-radius:var(--rl);padding:24px;max-width:400px;width:100%;box-shadow:var(--sh2)}
+.mo-box h3{font-size:1.08rem;margin-bottom:6px}
+.mo-box p{font-size:0.81rem;color:var(--t1);margin-bottom:14px;line-height:1.5}
+.mo-box .dots{display:flex;gap:6px;margin:10px 0}
+.mo-box .dot{width:10px;height:10px;border-radius:50%;background:var(--b1)}
+.mo-box .dot.used{background:var(--rd)}
+.moa{display:flex;gap:10px;margin-top:16px}
+.moa .btn{flex:1}
+/* SCHOOL CARD */
+.sc-item{background:var(--s1);border:1px solid var(--b0);border-radius:10px;padding:12px 13px;margin-bottom:8px}
+.sc-item b{display:block;font-size:0.77rem;line-height:1.4}
+.sc-item small{color:var(--t2);font-size:0.7rem}
+/* H2H */
+.h2h-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--b0);font-size:0.8rem}
+.h2h-row:last-child{border:none}
+.h2h-score{font-family:'Manrope';font-weight:800;min-width:50px;text-align:center}
+.h2h-badge{font-size:0.62rem;font-weight:800;padding:2px 7px;border-radius:5px}
+/* ANIMATION */
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(4px)}}
+@keyframes tumble{0%{transform:rotate(0) scale(1)}30%{transform:rotate(-8deg) scale(1.05)}60%{transform:rotate(370deg) scale(.9)}100%{transform:rotate(360deg) scale(1)}}
+.shake{animation:shake .4s}.tumble{animation:tumble 1.1s var(--ease) forwards}
+/* RESPONSIVE */
+@media(max-width:740px){.fg2{grid-template-columns:1fr 1fr}.dg{grid-template-columns:1fr 1fr}.wrap{padding:14px 12px 60px}}
+@media(max-width:480px){
+  .hero{grid-template-columns:38px 1fr}.hero-clock{display:none}.hero-copy h1{font-size:.97rem}.hero-copy p{display:none}
+  .fg2{grid-template-columns:1fr}.og{grid-template-columns:1fr 1fr}.tiles{grid-template-columns:1fr 1fr}
+  .mg{grid-template-columns:1fr 1fr}.dg{grid-template-columns:1fr 1fr}.dm{grid-template-columns:1fr auto}
+  .dm span:nth-child(3){display:none}.wrap{padding:12px 10px 60px}.panel{padding:13px 12px}
+  .btn{min-height:46px}
+}
+@media(max-width:380px){.hero{padding:11px 13px}.h-sec{font-size:.97rem}.tiles{grid-template-columns:1fr 1fr}.og{grid-template-columns:1fr 1fr}.wrap{padding:10px 8px 60px}}
+@media(min-width:1024px){.tiles{grid-template-columns:repeat(6,1fr)}.og{grid-template-columns:repeat(4,1fr)}.mg{grid-template-columns:repeat(4,1fr)}.dg{grid-template-columns:repeat(4,1fr)}}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="hero-mark">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/><path d="M12 8l3 4-3 4-3-4z" fill="currentColor" stroke="none"/>
+    </svg>
+  </div>
+  <div class="hero-copy">
+    <h1>Sniper Engine <span style="opacity:.6;font-weight:700">v9.6</span></h1>
+    <p>Min odd 1.30 · Value-only · H2H memory · Professor school · ROI by final odd · Zero crashes</p>
+  </div>
+  <div class="hero-clock"><span>EAT · Kampala</span><b id="clk">--:--:--</b></div>
+</div>
+<nav><div class="nav-inner" id="nav"></div></nav>
+<div class="wrap">
+  <div id="tab-dashboard" class="tab active"></div>
+  <div id="tab-input" class="tab"></div>
+  <div id="tab-fixtures" class="tab"></div>
+  <div id="tab-live" class="tab"></div>
+  <div id="tab-engine" class="tab"></div>
+  <div id="tab-final" class="tab"></div>
+  <div id="tab-bestbet" class="tab"></div>
+  <div id="tab-tracker" class="tab"></div>
+  <div id="tab-school" class="tab"></div>
+</div>
+<div class="dev-footer"><div class="dev-crest"><span class="mk">S°</span><span class="tx">Sharma_ray456°<small>Developer · v9.6</small></span></div></div>
+<div id="mroot"></div>
+<script>
+'use strict';
+/* ══════════════════════════════════════════════════════
+   STORAGE
+══════════════════════════════════════════════════════ */
+const GK='sn96_games',RK='sn96_results',AK='sn96_accas',LK='sn96_lock',H2HK='sn96_h2h';
+let games=load(GK,[]),results=load(RK,{}),accas=load(AK,[]),h2hDB=load(H2HK,{});
+function load(k,d){try{const v=JSON.parse(localStorage.getItem(k));return v!=null?v:d}catch(e){return d;}}
+function save(){try{localStorage.setItem(GK,JSON.stringify(games));localStorage.setItem(RK,JSON.stringify(results));localStorage.setItem(AK,JSON.stringify(accas));localStorage.setItem(H2HK,JSON.stringify(h2hDB));}catch(e){console.warn('Save failed',e);}}
+const MM=115;// match duration in minutes
+
+/* ══════════════════════════════════════════════════════
+   HELPERS
+══════════════════════════════════════════════════════ */
+function crestColor(n){let h=0;for(let i=0;i<n.length;i++)h=(h*31+n.charCodeAt(i))%360;return`hsl(${h},52%,41%)`;}
+function crestAbbr(n){const w=n.trim().split(/\s+/);return w.length===1?w[0].slice(0,3).toUpperCase():(w[0][0]+w[1][0]+(w[2]?w[2][0]:w[1][1]||'')).toUpperCase();}
+function crest(n){return`<span class="crest" style="background:${crestColor(n)}">${crestAbbr(n)}</span>`;}
+function statusOf(g){if(!g.start)return'upcoming';const now=Date.now(),st=new Date(g.start).getTime(),fin=st+MM*60000;return now<st?'upcoming':now<fin?'live':'finished';}
+function byStatus(s){return games.filter(g=>statusOf(g)===s);}
+function analysable(){return games.filter(g=>statusOf(g)!=='finished');}
+const clamp=(x,lo=.001,hi=.999)=>Math.min(hi,Math.max(lo,x));
+const pct=x=>(x*100).toFixed(1)+'%';
+const od=x=>(+x).toFixed(2);
+function fmtDate(iso){if(!iso)return'—';try{return new Date(iso).toLocaleString('en-GB',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});}catch(e){return iso;}}
+function fmtShort(iso){try{return new Date(iso).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});}catch(e){return'';}}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function empty(t,b,tb,lb){return`<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/></svg><h4>${esc(t)}</h4><p>${esc(b)}</p>${tb?`<button class="btn btn-g" onclick="go('${tb}')">${esc(lb)}</button>`:''}</div>`;}
+
+/* ══════════════════════════════════════════════════════
+   MATH ENGINE — Poisson + Dixon-Coles + Negative Binomial
+   + Implied Volatility + Symmetry Penalty + Per-market margins
+══════════════════════════════════════════════════════ */
+const MAXG=8,FC=[1];for(let i=1;i<=20;i++)FC[i]=FC[i-1]*i;
+function pois(k,l){if(l<=0)return k===0?1:0;if(k>20)return 0;return Math.exp(-l)*Math.pow(l,k)/FC[k];}
+function pmf(l){const a=[];for(let k=0;k<=MAXG;k++)a[k]=pois(k,l);return a;}
+function tau(x,y,l1,l2,rho){
+  if(x===0&&y===0)return Math.max(.001,1-l1*l2*rho);
+  if(x===0&&y===1)return Math.max(.001,1+l1*rho);
+  if(x===1&&y===0)return Math.max(.001,1+l2*rho);
+  if(x===1&&y===1)return Math.max(.001,1-rho);
+  return 1;
+}
+function ntriplet(arr){const s=arr[0]+arr[1]+arr[2];return s>0?arr.map(x=>x/s):[.33,.34,.33];}
+function strip(odd,m){return(odd>1)?clamp((1/odd)/(1+m)):null;}
+function nbPmf(l,d){
+  if(d<.02)return pmf(l);
+  const r=1/Math.max(d,.001),p=r/(r+l),a=[];
+  for(let k=0;k<=MAXG;k++){let lp=0;for(let j=0;j<k;j++)lp+=Math.log(r+j)-Math.log(j+1);lp+=r*Math.log(p)+k*Math.log(1-p);a[k]=Math.exp(lp);}
+  return a;
+}
+function agg(pm1,pm2,l1,l2,rho){
+  let tot=0,hw=0,dr=0,aw=0,o15=0,o25=0,o35=0,bt=0;
+  for(let i=0;i<=MAXG;i++)for(let j=0;j<=MAXG;j++){
+    let v=tau(i,j,l1,l2,rho)*pm1[i]*pm2[j];if(v<0)v=0;tot+=v;
+    const t=i+j;if(i>j)hw+=v;else if(i===j)dr+=v;else aw+=v;
+    if(t>=2)o15+=v;if(t>=3)o25+=v;if(t>=4)o35+=v;if(i>=1&&j>=1)bt+=v;
+  }
+  if(tot<=0)return{hw:.33,dr:.33,aw:.34,o15:.7,o25:.45,o35:.22,bt:.44,dc1x:.66};
+  return{hw:hw/tot,dr:dr/tot,aw:aw/tot,o15:o15/tot,o25:o25/tot,o35:o35/tot,bt:bt/tot,dc1x:(hw+dr)/tot};
+}
+function margins(o){
+  const raw=[1/o.home,1/o.draw,1/o.away],s=raw[0]+raw[1]+raw[2];
+  const M1=clamp(s-1,.01,.28);
+  return{M1,mT:clamp(M1*.80,.012,.16),mB:clamp(M1*.88,.012,.16),mD:clamp(M1*.90,.012,.18)};
+}
+function impliedVol(o,mT){
+  if(!(o.o15>1&&o.o25>1))return{vol:.5,hi:false};
+  const p15=strip(o.o15,mT),p25=strip(o.o25,mT);
+  if(!p15||!p25)return{vol:.5,hi:false};
+  const vol=clamp(Math.abs(p15-p25)/.35,0,1);
+  return{vol,hi:vol>.65};
+}
+function fitModel(o){
+  const mg=margins(o),M1=mg.M1,mT=mg.mT,mB=mg.mB,mD=mg.mD;
+  const raw=[1/o.home,1/o.draw,1/o.away],[fh,fd,fa]=ntriplet(raw);
+  const iv=impliedVol(o,mT);
+  const disp=iv.hi?.18:.06;
+  // Symmetric weights — equal for hw/aw prevents home bias
+  const wH=fh>fa*1.1?3.0:fh<fa*1.1?2.7:2.85;
+  const wA=fa>fh*1.1?3.0:fa<fh*1.1?2.7:2.85;
+  const tgts=[
+    {t:'hw',v:fh,w:wH},{t:'dr',v:fd,w:2.1},{t:'aw',v:fa,w:wA},
+    {t:'o25',v:strip(o.o25,mT),w:2.6}
+  ];
+  if(o.o15>1){const v=strip(o.o15,mT);if(v)tgts.push({t:'o15',v,w:1.9});}
+  if(o.btts>1){const v=strip(o.btts,mB);if(v)tgts.push({t:'bt',v,w:1.8});}
+  if(o.dc1x>1){const v=strip(o.dc1x,mD);if(v)tgts.push({t:'dc1x',v,w:1.4});}
+  const vt=tgts.filter(t=>t.v!=null&&t.v>.001&&t.v<.999);
+  const oddsRatio=Math.sqrt(Math.max(fh,.05)/Math.max(fa,.05));
+  const rhoLo=iv.hi?-.08:-.25,rhoHi=.08;
+  const rhoGrid=[];for(let r=rhoLo;r<=rhoHi+.001;r+=.04)rhoGrid.push(+r.toFixed(3));
+  function score(l1,l2,rho){
+    const pm1=nbPmf(l1,disp),pm2=nbPmf(l2,disp),a=agg(pm1,pm2,l1,l2,rho);
+    let err=0,ws=0;
+    for(const t of vt){if(a[t.t]==null)continue;const d=a[t.t]-t.v;err+=t.w*d*d;ws+=t.w;}
+    if(l2>.05){const ratio=l1/l2,rd=(ratio-oddsRatio)*(ratio-oddsRatio)*.35;err+=rd;ws+=.35;}
+    return{err,ws};
+  }
+  let best=null;
+  for(let lt=.3;lt<=5.2;lt+=.10){
+    for(let s=.05;s<=.95;s+=.025){
+      const l1=lt*s,l2=lt*(1-s);
+      for(const rho of rhoGrid){
+        const{err,ws}=score(l1,l2,rho);
+        if(!best||err<best.err)best={l1,l2,rho,err,ws};
+      }
+    }
+  }
+  if(!best)best={l1:1.2,l2:.9,rho:-.10,err:.5,ws:10};
+  const lt0=best.l1+best.l2,s0=best.l1/Math.max(lt0,.01);
+  let fine=best;
+  for(let lt=Math.max(.1,lt0-.2);lt<=Math.min(5.8,lt0+.2);lt+=.010){
+    for(let s=Math.max(.04,s0-.10);s<=Math.min(.96,s0+.10);s+=.002){
+      const l1=lt*s,l2=lt*(1-s);
+      for(let rho=Math.max(rhoLo-.04,best.rho-.08);rho<=Math.min(rhoHi+.04,best.rho+.08);rho+=.004){
+        const{err}=score(l1,l2,rho);
+        if(err<fine.err)fine={l1,l2,rho,err,ws:fine.ws};
+      }
+    }
+  }
+  fine.rms=Math.sqrt(fine.err/Math.max(fine.ws,.001));
+  fine.M1=M1;fine.mT=mT;fine.mB=mB;fine.mD=mD;fine.disp=disp;fine.iv=iv;fine.oddsRatio=oddsRatio;fine.nOpt=tgts.length-4;
+  return fine;
+}
+
+/* ══════════════════════════════════════════════════════
+   LEARNING / SCHOOL
+══════════════════════════════════════════════════════ */
+function emptyCor(){return{totals:1,btts:1,dc:1,x12:1,o25:1,o15:1,home:1,draw:1,away:1};}
+function mktCat(n){
+  if(['Home Win','Draw','Away Win'].includes(n))return'x12';
+  if(n.startsWith('Double'))return'dc';
+  if(n==='BTTS Yes'||n==='BTTS No')return'btts';
+  if(n==='Over 2.5'||n==='Under 2.5')return'o25';
+  if(n==='Over 1.5'||n==='Under 1.5')return'o15';
+  if(n.startsWith('Over')||n.startsWith('Under'))return'totals';
+  return null;
+}
+function outCat(n){return n==='Home Win'?'home':n==='Draw'?'draw':n==='Away Win'?'away':null;}
+function computeSchool(){
+  const graded=games.filter(g=>statusOf(g)==='finished'&&results[g.id]?.hg!=null&&g.snapshot);
+  const cor=emptyCor();
+  const bkts={totals:[],btts:[],dc:[],x12:[],o25:[],o15:[],home:[],draw:[],away:[]};
+  const tiers={value:{b:0,w:0,pnl:0},highprob:{b:0,w:0,pnl:0},leastbad:{b:0,w:0,pnl:0}};
+  const lessons=[];
+  graded.forEach(g=>{
+    const r=results[g.id],s=g.snapshot,rec=s.recommendation;
+    const hit=evalMkt(rec.market.name,r.hg,r.ag);
+    const tr=tiers[rec.tier];
+    if(tr){
+      tr.b++;
+      const usedOdd=rec.market.fromInput?rec.market.bpOdd:rec.market.estOdd;
+      if(hit===true){tr.w++;tr.pnl+=1000*(usedOdd-1);}
+      else if(hit===false)tr.pnl-=1000;
+    }
+    // Category calibration
+    (s.markets||[]).forEach(m=>{
+      if(m.corrProb>=.55){
+        const h=evalMkt(m.name,r.hg,r.ag);if(h==null)return;
+        const cat=mktCat(m.name);if(cat&&bkts[cat])bkts[cat].push({p:m.corrProb,h:h?1:0});
+        const oc=outCat(m.name);if(oc&&bkts[oc])bkts[oc].push({p:m.corrProb,h:h?1:0});
+      }
+    });
+    // H2H memory
+    const key=h2hKey(g.home,g.away);
+    if(!h2hDB[key])h2hDB[key]=[];
+    h2hDB[key].unshift({home:g.home,away:g.away,hg:r.hg,ag:r.ag,date:g.start,league:g.league||''});
+    if(h2hDB[key].length>20)h2hDB[key]=h2hDB[key].slice(0,20);
+    save();
+    // Lesson generation
+    const rms=s.rms||0;
+    if(hit===false&&rms<.08)lessons.push({type:'surprise',text:`${g.home} v ${g.away}: model was confident (RMS ${(rms*100).toFixed(0)}) but ${rec.market.name} missed. Updating category weights.`});
+    else if(hit===true&&rec.tier==='value')lessons.push({type:'confirm',text:`${g.home} v ${g.away}: value pick ${rec.market.name} landed ✅ EV +${((rec.market.realEV||0)*100).toFixed(1)}%.`});
+  });
+  if(graded.length>=5){
+    Object.keys(bkts).forEach(k=>{
+      const arr=bkts[k];if(arr.length<5)return;
+      const avgP=arr.reduce((s,x)=>s+x.p,0)/arr.length;
+      const hitR=arr.reduce((s,x)=>s+x.h,0)/arr.length;
+      if(avgP>.05)cor[k]=clamp(hitR/avgP,.70,1.20);
+    });
+  }
+  // Plain-English report
+  const report=[];
+  if(graded.length<5){report.push(`The school needs ${5-graded.length} more graded game${graded.length!==4?'s':''} before it starts correcting the model.`);}
+  else{
+    const explain=(k,label)=>{const c=cor[k];if(c<.93)report.push(`${label} is being corrected DOWN by ${((1-c)*100).toFixed(0)}% — you were overconfident here.`);else if(c>1.07)report.push(`${label} is being corrected UP by ${((c-1)*100).toFixed(0)}% — the model was underestimating.`);};
+    explain('totals','Totals');explain('o25','Over/Under 2.5');explain('o15','Over/Under 1.5');explain('btts','BTTS');explain('dc','Double Chance');explain('x12','1X2');
+    const{b:vb,w:vw,pnl:vpnl}=tiers.value;if(vb)report.push(`Value bets (Tier 1): ${vb} placed, ${vw} won (${((vw/vb)*100).toFixed(0)}%), ROI ${((vpnl/(vb*1000))*100).toFixed(1)}%.`);
+    const{b:hb,w:hw,pnl:hpnl}=tiers.highprob;if(hb)report.push(`High-prob bets (Tier 2): ${hb} placed, ${hw} won (${((hw/hb)*100).toFixed(0)}%).`);
+    const{b:lb,w:lw}=tiers.leastbad;if(lb)report.push(`Least-bad bets (Tier 3): ${lw}/${lb} won — consider skipping these.`);
+  }
+  return{graded:graded.length,corrections:cor,tiers,report,lessons:lessons.slice(0,10)};
+}
+const SCHOOL=()=>computeSchool();
+
+/* H2H */
+function h2hKey(h,a){return[h,a].sort().join('__').toLowerCase().replace(/\s+/g,'_');}
+function getH2H(home,away){
+  const key=h2hKey(home,away);
+  return(h2hDB[key]||[]).slice(0,8);
+}
+function h2hStats(records,home,away){
+  let hw=0,dr=0,aw=0,avgT=0;
+  records.forEach(r=>{
+    const hIsHome=r.home.toLowerCase()===home.toLowerCase();
+    if(r.hg>r.ag)hIsHome?hw++:aw++;
+    else if(r.hg===r.ag)dr++;
+    else hIsHome?aw++:hw++;
+    avgT+=r.hg+r.ag;
+  });
+  const n=records.length||1;
+  return{hw,dr,aw,n:records.length,avgGoals:(avgT/n).toFixed(1),hwPct:((hw/n)*100).toFixed(0),awPct:((aw/n)*100).toFixed(0),drPct:((dr/n)*100).toFixed(0)};
+}
+
+/* ══════════════════════════════════════════════════════
+   PREDICTION CACHE
+══════════════════════════════════════════════════════ */
+const pCache=new Map();
+function cKey(g){const o=g.odds||{};return g.id+'|'+[o.home,o.draw,o.away,o.o25,o.o15,o.btts,o.dc1x,o.hto05].join(',');}
+function getPred(g){if(!g?.id)return null;const k=cKey(g);if(pCache.has(k))return pCache.get(k);const p=computePred(g);if(p)pCache.set(k,p);return p;}
+function killCache(gid){for(const k of pCache.keys())if(k.startsWith(gid+'|'))pCache.delete(k);}
+
+/* ══════════════════════════════════════════════════════
+   CORE PREDICTION
+══════════════════════════════════════════════════════ */
+function computePred(g){
+  const o=g.odds||{};
+  if(!(o.home>1&&o.draw>1&&o.away>1&&o.o25>1))return null;
+  const f=fitModel(o),l1=f.l1,l2=f.l2,rho=f.rho,lT=l1+l2;
+  const pm1=nbPmf(l1,f.disp),pm2=nbPmf(l2,f.disp);
+  const P=[];let tot=0;
+  for(let i=0;i<=MAXG;i++){P[i]=[];for(let j=0;j<=MAXG;j++){let v=tau(i,j,l1,l2,rho)*pm1[i]*pm2[j];if(v<0)v=0;P[i][j]=v;tot+=v;}}
+  if(tot<=0)return null;
+  for(let i=0;i<=MAXG;i++)for(let j=0;j<=MAXG;j++)P[i][j]/=tot;
+  let hw=0,dr=0,aw=0,o15=0,o25=0,o35=0,bt=0;
+  const csAll=[];
+  for(let i=0;i<=MAXG;i++)for(let j=0;j<=MAXG;j++){
+    const p=P[i][j],t=i+j;
+    if(i>j)hw+=p;else if(i===j)dr+=p;else aw+=p;
+    if(t>=2)o15+=p;if(t>=3)o25+=p;if(t>=4)o35+=p;if(i>=1&&j>=1)bt+=p;
+    csAll.push({i,j,score:i+'-'+j,prob:p});
+  }
+  csAll.sort((a,b)=>b.prob-a.prob);
+  const csList=csAll.slice(0,10),csMass=csList.reduce((s,c)=>s+c.prob,0),topCS=csList[0];
+  // HT matrix
+  const l1h=.45*l1,l2h=.45*l2,pm1h=pmf(l1h),pm2h=pmf(l2h);
+  const ht=[];let htot=0,htO05=0;
+  for(let i=0;i<=4;i++)for(let j=0;j<=4;j++){let v=tau(i,j,l1h,l2h,rho)*pm1h[i]*pm2h[j];if(v<0)v=0;ht.push({i,j,score:i+'-'+j,prob:v});htot+=v;if(i+j>=1)htO05+=v;}
+  if(htot>0){ht.forEach(x=>x.prob/=htot);htO05/=htot;}
+  ht.sort((a,b)=>b.prob-a.prob);
+  const htScores=ht.slice(0,6);
+  const school=SCHOOL();
+  function applyCorr(name,prob){
+    let p=prob;
+    const cat=mktCat(name);if(cat&&school.corrections[cat])p*=school.corrections[cat];
+    const oc=outCat(name);if(oc&&school.corrections[oc])p*=school.corrections[oc];
+    return clamp(p);
+  }
+  const sigma=clamp(f.rms*.85,.012,.16);
+  let confTier=f.rms<.07?'high':f.rms<.15?'medium':'low';
+  if(f.iv?.hi&&confTier==='high')confTier='medium';
+  const volLabel=f.iv?(f.iv.hi?'High':f.iv.vol>.35?'Medium':'Low'):'Medium';
+
+  /* ── MIN ODD FILTER: 1.30 minimum ──
+     Markets with estimated or real odd below 1.30 are flagged as low-value.
+     They can still be shown but cannot be recommended or included in accas. */
+  const MIN_ODD=1.30;
+
+  function buildMkt(name,rawProb,enteredOdd){
+    const corrProb=applyCorr(name,rawProb);
+    const fairOdd=1/Math.max(rawProb,.001),corrFair=1/corrProb;
+    const fromInput=!!(enteredOdd&&enteredOdd>1);
+    const cat=mktCat(name);
+    const margin=cat==='btts'?f.mB:cat==='dc'?f.mD:cat==='x12'?f.M1:f.mT;
+    const estOdd=corrFair/(1+margin),bpOdd=fromInput?enteredOdd:estOdd;
+    let realEV=null,kelly=null,halfKelly=null;
+    if(fromInput){
+      realEV=corrProb*enteredOdd-1;
+      const rk=Math.max(0,(corrProb*enteredOdd-1)/(enteredOdd-1));
+      kelly=rk;halfKelly=rk*.5;
+    }
+    // Consistency score
+    let conScore=1.0;
+    if(fromInput&&enteredOdd>1){const gap=Math.abs(1/enteredOdd-corrProb);conScore=clamp(1-gap*4,.1,1);}
+    const useOdd=fromInput?bpOdd:estOdd;
+    const lowValue=useOdd<MIN_ODD;
+    return{name,rawProb,corrProb,fairOdd,estOdd,bpOdd,useOdd,fromInput,realEV,kelly,halfKelly,conScore,lowValue,lo:clamp(corrProb-sigma),hi:clamp(corrProb+sigma)};
+  }
+
+  const markets=[
+    buildMkt('Home Win',hw,o.home),buildMkt('Draw',dr,o.draw),buildMkt('Away Win',aw,o.away),
+    buildMkt('Double Chance 1X',hw+dr,o.dc1x),buildMkt('Double Chance X2',dr+aw,null),buildMkt('Double Chance 12',hw+aw,null),
+    buildMkt('Over 1.5',o15,o.o15),buildMkt('Under 1.5',1-o15,null),
+    buildMkt('Over 2.5',o25,o.o25),buildMkt('Under 2.5',1-o25,null),
+    buildMkt('Over 3.5',o35,null),buildMkt('Under 3.5',1-o35,null),
+    buildMkt('BTTS Yes',bt,o.btts),buildMkt('BTTS No',1-bt,null),
+    buildMkt('HT Over 0.5',htO05,o.hto05),
+    buildMkt('Correct Score '+topCS.score,topCS.prob,null),
+  ];
+
+  // Direction & goal model filters (minimal — only hard contradictions)
+  function dirOK(m){
+    if(hw>.50&&m.name==='Away Win')return false;
+    if(hw>.65&&m.name==='Double Chance X2')return false;
+    if(aw>.50&&m.name==='Home Win')return false;
+    if(aw>.65&&m.name==='Double Chance 1X')return false;
+    return true;
+  }
+  function goalOK(m){
+    if(lT<1.7){if(m.name==='Over 3.5')return false;if(m.name==='Over 2.5'&&m.corrProb<.55)return false;}
+    if(lT>3.0){if(m.name==='Under 1.5')return false;}
+    return true;
+  }
+  // Recommendation pool: pass direction+goal filters AND min odd 1.30
+  const eligible=markets.filter(m=>dirOK(m)&&goalOK(m)&&!m.lowValue);
+  const pool=eligible.length?eligible:markets.filter(m=>!m.lowValue&&dirOK(m));
+  const anyPool=pool.length?pool:markets.filter(m=>!m.lowValue);
+
+  // ── RECOMMENDATION: Two rules ──
+  // RULE 1: Positive EV real market → VALUE
+  const posEV=anyPool.filter(m=>m.fromInput&&(m.realEV||0)>0).sort((a,b)=>(b.realEV*(b.conScore||1))-(a.realEV*(a.conScore||1)));
+  let best=null,recoTier='leastbad',recoMsg='';
+  if(posEV.length){
+    best=posEV[0];recoTier='value';
+    recoMsg=`🎯 EV +${(best.realEV*100).toFixed(1)}% · odd ${od(best.bpOdd)} · real BetPawa odd · edge confirmed.`;
+  }
+  // RULE 2: Highest probability — any market (real or estimated), min odd ≥1.30
+  if(!best){
+    const byProb=anyPool.slice().sort((a,b)=>b.corrProb-a.corrProb);
+    best=byProb[0];
+    recoTier=best?.corrProb>=.65?'highprob':'leastbad';
+    const src=best?.fromInput?'real odd':'model estimate — verify on BetPawa';
+    recoMsg=`Highest probability ${pct(best?.corrProb||0)} · odd ${od(best?.useOdd||0)} · ${src}.`;
+  }
+  // Consistency check
+  const top5=csList.slice(0,5);
+  let consistent=true;
+  if(best){
+    const t5h=top5.filter(x=>x.i>x.j).length,t5a=top5.filter(x=>x.i<x.j).length;
+    if(best.name==='Home Win'&&t5a>=4)consistent=false;
+    if(best.name==='Away Win'&&t5h>=4)consistent=false;
+    if(!consistent){
+      const alt=anyPool.filter(m=>m!==best&&!(m.name==='Home Win'&&t5a>=4)&&!(m.name==='Away Win'&&t5h>=4)).sort((a,b)=>b.corrProb-a.corrProb)[0];
+      if(alt){best=alt;consistent=true;recoMsg+=' (auto-corrected)';}
+    }
+  }
+  const evM=best?(best.fromInput?(best.realEV??-.05):best.corrProb-.5):-.1;
+  return{
+    l1,l2,rho,lT,hw,dr:dr,aw,markets,csList,csMass,htScores,topScore:topCS.score,topP:topCS.prob,
+    confTier,sigma,volLabel,rms:f.rms,nOpt:f.nOpt,margins:{M1:f.M1,mT:f.mT,mB:f.mB,mD:f.mD},
+    recommendation:{market:best,tier:recoTier,message:recoMsg,consistent},
+    valueMeter:clamp((evM-(-.18))/.36,0,1),school
+  };
+}
+
+/* ══════════════════════════════════════════════════════
+   SNAPSHOT — stores corrected probs
+══════════════════════════════════════════════════════ */
+function makeSnap(p){
+  if(!p)return null;
+  return{
+    ts:Date.now(),rms:p.rms,confTier:p.confTier,sigma:p.sigma,lT:p.lT,
+    hw:p.hw,dr:p.dr,aw:p.aw,topScore:p.topScore,topP:p.topP,
+    recommendation:{
+      market:{name:p.recommendation.market.name,fromInput:p.recommendation.market.fromInput,
+              bpOdd:p.recommendation.market.bpOdd,estOdd:p.recommendation.market.estOdd,
+              realEV:p.recommendation.market.realEV,corrProb:p.recommendation.market.corrProb},
+      tier:p.recommendation.tier,message:p.recommendation.message,consistent:p.recommendation.consistent
+    },
+    markets:p.markets.map(m=>({name:m.name,corrProb:m.corrProb,fromInput:m.fromInput,bpOdd:m.bpOdd,estOdd:m.estOdd,realEV:m.realEV,useOdd:m.useOdd,lowValue:m.lowValue}))
+  };
+}
+function ensureSnaps(){let ch=false;games.forEach(g=>{if(!g.snapshot){const p=getPred(g);if(p){g.snapshot=makeSnap(p);ch=true;}}});if(ch)save();}
+
+/* ══════════════════════════════════════════════════════
+   EVAL MARKET
+══════════════════════════════════════════════════════ */
+function evalMkt(name,hg,ag){
+  if(hg==null||ag==null||isNaN(hg)||isNaN(ag))return null;
+  const t=hg+ag;
+  if(name==='Home Win')return hg>ag;if(name==='Draw')return hg===ag;if(name==='Away Win')return ag>hg;
+  if(name==='Double Chance 1X')return hg>=ag;if(name==='Double Chance X2')return ag>=hg;if(name==='Double Chance 12')return hg!==ag;
+  if(name==='Over 1.5')return t>=2;if(name==='Under 1.5')return t<2;
+  if(name==='Over 2.5')return t>=3;if(name==='Under 2.5')return t<3;
+  if(name==='Over 3.5')return t>=4;if(name==='Under 3.5')return t<4;
+  if(name==='BTTS Yes')return hg>=1&&ag>=1;if(name==='BTTS No')return!(hg>=1&&ag>=1);
+  if(name==='HT Over 0.5')return null;
+  if(name.startsWith('Correct Score')){const m=name.match(/(\d+)-(\d+)/);return m?(+m[1]===hg&&+m[2]===ag):null;}
+  return null;
+}
+
+/* ══════════════════════════════════════════════════════
+   UI HELPERS
+══════════════════════════════════════════════════════ */
+function tierBadge(t){return t==='value'?'<span class="tag tv">🎯 Value</span>':t==='highprob'?'<span class="tag thp">⚡ High Prob</span>':'<span class="tag tlb">⚠ Least Bad</span>';}
+function confBadge(p){return p.confTier==='high'?'<span class="tag ch">🟢 High Conf</span>':p.confTier==='medium'?'<span class="tag cm">🟡 Medium</span>':'<span class="tag cl">🔴 Speculative</span>';}
+function csBars(list){
+  if(!list?.length)return'';
+  const max=list[0].prob||.01;
+  let h=`<div class="csl"><span><i class="csh"></i>Home</span><span><i class="csd"></i>Draw</span><span><i class="csa"></i>Away</span></div>`;
+  list.forEach(c=>{const cls=c.i>c.j?'csh':c.i===c.j?'csd':'csa';h+=`<div class="csr"><span class="css">${c.score}</span><div class="cst"><div class="csf ${cls}" style="width:${(c.prob/max*100).toFixed(1)}%"></div></div><span class="csp">${pct(c.prob)}</span></div>`;});
+  return h;
+}
+function vmHtml(v){const p=Math.round(clamp(v,0,1)*100);return`<div class="vmtr"><div class="pin" style="left:${p}%"></div></div><div style="display:flex;justify-content:space-between;font-size:.67rem;color:var(--t2);margin-top:7px"><span>Skip</span><span>Borderline</span><span>Value ✅</span></div>`;}
+function scoreReco(p){const r=p.recommendation;return r.tier==='value'?3+(r.market.realEV||0):r.tier==='highprob'?2+r.market.corrProb:1;}
+
+/* ══════════════════════════════════════════════════════
+   NAV / ROUTER
+══════════════════════════════════════════════════════ */
+const TABS=[
+  {id:'dashboard',label:'Dashboard'},{id:'input',label:'Input'},
+  {id:'fixtures',label:'Fixtures'},{id:'live',label:'Live',live:true},
+  {id:'engine',label:'Engine'},{id:'final',label:'Final Analysis'},
+  {id:'bestbet',label:'Best Bet'},{id:'tracker',label:'Tracker'},
+  {id:'school',label:'📚 School'}
+];
+let currentTab='dashboard';
+function buildNav(){
+  const c={fixtures:byStatus('upcoming').length,live:byStatus('live').length,tracker:byStatus('finished').length,input:games.length};
+  document.getElementById('nav').innerHTML=TABS.map(t=>{
+    const n=c[t.id],lc=t.live?'live-tab'+(c.live>0?' has':''):'';
+    return`<button class="${t.id===currentTab?'active':''} ${lc}" onclick="go('${t.id}')">${esc(t.label)}${n?`<span class="pill">${n}</span>`:''}</button>`;
+  }).join('');
+}
+function go(id){currentTab=id;document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active'));const el=document.getElementById('tab-'+id);if(el)el.classList.add('active');buildNav();render(id);window.scrollTo({top:0,behavior:'smooth'});}
+function render(id){const fn={dashboard:renderDash,input:renderInput,fixtures:renderFix,live:renderLive,engine:renderEng,final:renderFinal,bestbet:renderBest,tracker:renderTracker,school:renderSchool}[id];if(fn)try{fn();}catch(e){console.error('Render error',id,e);const el=document.getElementById('tab-'+id);if(el)el.innerHTML=`<div class="panel"><p class="sub" style="color:var(--rd)">Render error: ${esc(e.message)}</p></div>`;}}
+
+/* ══════════════════════════════════════════════════════
+   DASHBOARD
+══════════════════════════════════════════════════════ */
+function renderDash(){
+  const up=byStatus('upcoming'),lv=byStatus('live'),fin=byStatus('finished');
+  const L=learnStats(),aS=accaStats(),sch=SCHOOL();
+  const picks=analysable().map(g=>({g,p:getPred(g)})).filter(x=>x.p).sort((a,b)=>scoreReco(b.p)-scoreReco(a.p)).slice(0,3);
+  let h=`<div class="row-between"><div><div class="eyebrow">Overview</div><div class="h-sec">Dashboard</div></div><button class="btn btn-d btn-sm" onclick="openReset()">⟲ Reset</button></div>`;
+  h+=`<div class="tiles"><div class="tile brand"><div class="k">Games</div><div class="v">${games.length}</div><div class="m">total</div></div><div class="tile"><div class="k">Upcoming</div><div class="v">${up.length}</div></div><div class="tile live-t"><div class="k">Live</div><div class="v">${lv.length}</div></div><div class="tile"><div class="k">Finished</div><div class="v">${fin.length}</div></div><div class="tile"><div class="k">Rec hit</div><div class="v">${L.rs?pct(L.rw/L.rs):'—'}</div><div class="m">one bet/game</div></div><div class="tile"><div class="k">Accas</div><div class="v">${aS.won}/${aS.settled}</div><div class="m">${accas.length} total</div></div></div>`;
+  if(picks.length){h+=`<div class="panel"><div class="ph"><h3>Today's top picks</h3><span class="sub">Min odd 1.30 · value-first · school-corrected</span></div>`;picks.forEach(x=>{const r=x.p.recommendation;h+=`<div class="mcard"><div class="mct">${crest(x.g.home)}<div class="vt">${esc(x.g.home)}<small>vs ${esc(x.g.away)} · ${esc(x.g.league||'—')} · ${fmtDate(x.g.start)}</small></div>${tierBadge(r.tier)}${confBadge(x.p)}</div><div style="margin-top:9px;font-size:.84rem"><b>${esc(r.market.name)}</b> · ${pct(r.market.corrProb)} · odd ${od(r.market.useOdd||r.market.bpOdd||r.market.estOdd)} · ${esc(r.message)}</div><div style="margin-top:6px"><span class="chip" style="font-size:.61rem">λ ${x.p.lT.toFixed(2)} · Vol ${x.p.volLabel} · ${r.consistent?'✓ Consistent':'⚠ Flagged'}</span></div></div>`;});h+=`</div>`;}
+  if(sch.report.length)h+=`<div class="panel"><div class="ph"><h3>School summary</h3></div>${sch.report.map(x=>`<div class="sc-item"><b>${esc(x)}</b></div>`).join('')}</div>`;
+  if(!games.length)h+=empty('No games yet','Go to Input to add matches.','input','Add first game');
+  document.getElementById('tab-dashboard').innerHTML=h;
+}
+
+/* ══════════════════════════════════════════════════════
+   INPUT
+══════════════════════════════════════════════════════ */
+const QO=['1.20','1.30','1.40','1.50','1.60','1.70','1.80','2.00','2.20','2.50','3.00','3.50','4.00'];
+function oField(id,label,mandatory=false){return`<div class="field tf ${mandatory?'gold':''}"><label>${label}</label><input id="${id}" type="number" step="0.01" min="1.01" max="200" placeholder="1.80" inputmode="decimal"><div class="qo">${QO.slice(0,mandatory?7:10).map(v=>`<button type="button" onclick="setOdd('${id}','${v}')">${v}</button>`).join('')}</div></div>`;}
+function renderInput(){
+  let h=`<div class="row-between"><div><div class="eyebrow">Step 1</div><div class="h-sec">Add a match</div></div><button class="btn btn-g btn-sm" onclick="loadDemo()">+ Demo games</button></div>
+  <div class="panel">
+    <div class="fg2">
+      <div class="field"><label>Home team *</label><input id="i-home" placeholder="e.g. Arsenal" autocomplete="off"></div>
+      <div class="field"><label>Away team *</label><input id="i-away" placeholder="e.g. Chelsea" autocomplete="off"></div>
+      <div class="field"><label>League</label><input id="i-lg" placeholder="e.g. Premier League"></div>
+      <div class="field"><label>Kickoff (EAT) *</label><input id="i-st" type="datetime-local"></div>
+    </div>
+    <div class="divider"></div>
+    <div class="eyebrow" style="margin-bottom:6px">Mandatory BetPawa odds <span style="color:var(--am);font-size:.67rem">(all 4 required · min 1.30 for recommendation)</span></div>
+    <div class="og">${oField('o-h','Home Win *',true)}${oField('o-d','Draw *',true)}${oField('o-a','Away Win *',true)}${oField('o-25','Over 2.5 *',true)}</div>
+    <div class="eyebrow" style="margin:14px 0 6px">Optional odds <span class="sub">(enter any — improves accuracy & EV detection)</span></div>
+    <div class="og">${oField('o-bt','BTTS Yes')}${oField('o-15','Over 1.5')}${oField('o-dc','DC 1X')}${oField('o-ht','HT Over 0.5')}</div>
+    <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+      <button class="btn btn-p" onclick="addGame()">Add match →</button>
+      <span id="i-msg" class="sub"></span>
+    </div>
+  </div>`;
+  const up=byStatus('upcoming'),lv=byStatus('live');
+  h+=`<div class="panel"><div class="ph"><h3>Your games (${games.length})</h3></div>`;
+  if(!up.length&&!lv.length){h+=`<p class="sub">No upcoming or live games.</p>`;}
+  else{
+    h+=`<div class="tsc"><table><thead><tr><th>#</th><th>Match</th><th>League</th><th>Kickoff</th><th>Status</th><th>Cached</th><th></th></tr></thead><tbody>`;
+    [...lv,...up].forEach(g=>{const s=statusOf(g),seq=games.indexOf(g)+1;h+=`<tr><td>${seq}</td><td><b>${esc(g.home)}</b> v ${esc(g.away)}</td><td>${esc(g.league||'—')}</td><td>${fmtDate(g.start)}</td><td>${s==='live'?'<span class="tag t-lv">LIVE</span>':'<span class="tag t-up">Up</span>'}</td><td>${g.snapshot?'✅':'⏳'}</td><td><button class="btn btn-d btn-sm" onclick="delGame('${g.id}')">✕</button></td></tr>`;});
+    h+=`</tbody></table></div>`;
+  }
+  h+=`</div>`;
+  document.getElementById('tab-input').innerHTML=h;
+  setupAT();
+}
+function setOdd(id,v){const el=document.getElementById(id);if(!el)return;el.value=v;el.dispatchEvent(new Event('input'));el.focus();}
+function setupAT(){const ids=['o-h','o-d','o-a','o-25'];ids.forEach((id,i)=>{const el=document.getElementById(id);if(!el)return;el.addEventListener('input',()=>{if(el.value.length>=4&&i<ids.length-1)document.getElementById(ids[i+1])?.focus();});});}
+function nv(id){const v=parseFloat(document.getElementById(id)?.value);return(isNaN(v)||v<=1)?null:v;}
+function dupEx(h,a,s){return games.some(g=>g.home.toLowerCase()===h.toLowerCase()&&g.away.toLowerCase()===a.toLowerCase()&&g.start===s);}
+function addGame(){
+  const home=(document.getElementById('i-home')?.value||'').trim(),away=(document.getElementById('i-away')?.value||'').trim();
+  const start=document.getElementById('i-st')?.value||'',msg=document.getElementById('i-msg');
+  const setMsg=(t,ok)=>{if(msg){msg.textContent=t;msg.style.color=ok?'var(--gn)':'var(--rd)';}};
+  if(!home||!away)return setMsg('⚠ Enter both team names',false);
+  if(!start)return setMsg('⚠ Set kickoff time',false);
+  if(dupEx(home,away,start))return setMsg('⚠ Match already added',false);
+  const oh=nv('o-h'),odw=nv('o-d'),oa=nv('o-a'),o25=nv('o-25');
+  if(!oh||!odw||!oa||!o25)return setMsg('⚠ All 4 mandatory odds required',false);
+  const game={id:'g'+Date.now()+Math.floor(Math.random()*9999),home,away,league:(document.getElementById('i-lg')?.value||'').trim(),start,odds:{home:oh,draw:odw,away:oa,o25,btts:nv('o-bt'),o15:nv('o-15'),dc1x:nv('o-dc'),hto05:nv('o-ht')}};
+  const p=getPred(game);game.snapshot=makeSnap(p);
+  games.push(game);save();
+  ['i-home','i-away','i-lg','o-h','o-d','o-a','o-25','o-bt','o-15','o-dc','o-ht'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  setMsg('✅ Added and cached',true);buildNav();renderInput();
+}
+function delGame(id){games=games.filter(g=>g.id!==id);delete results[id];killCache(id);save();buildNav();render(currentTab);}
+function loadDemo(){
+  const now=Date.now();
+  [['Manchester City','Nottingham Forest','Premier League',now+3.6e6*3,[1.35,5.20,8.50,1.55,1.72,1.20,1.08,1.22]],
+   ['Real Madrid','Getafe','La Liga',now+3.6e6*26,[1.42,4.60,7.20,1.62,1.85,1.25,1.10,1.30]],
+   ['Inter','Napoli','Serie A',now+3.6e6*28,[2.10,3.30,3.50,1.90,1.75,1.30,1.35,1.28]],
+   ['Bayern Munich','Union Berlin','Bundesliga',now+3.6e6*5,[1.28,6.00,9.50,1.45,1.80,1.15,1.05,1.18]]].forEach((d,i)=>{
+    const g={id:'demo'+now+i,home:d[0],away:d[1],league:d[2],start:new Date(d[3]).toISOString().slice(0,16),odds:{home:d[4][0],draw:d[4][1],away:d[4][2],o25:d[4][3],btts:d[4][4],o15:d[4][5],dc1x:d[4][6],hto05:d[4][7]}};
+    g.snapshot=makeSnap(getPred(g));games.push(g);
+  });
+  save();buildNav();renderInput();
+}
+
+/* ══════════════════════════════════════════════════════
+   FIXTURES / LIVE
+══════════════════════════════════════════════════════ */
+function matchCard(g){
+  const p=getPred(g);if(!p)return'';
+  const r=p.recommendation;
+  return`<div class="mcard"><div class="mct">${crest(g.home)}<div class="vt">${esc(g.home)}<small>vs ${esc(g.away)} · ${esc(g.league||'—')} · ${fmtDate(g.start)}</small></div>${tierBadge(r.tier)}${confBadge(p)}</div>
+  <div class="pbar"><div class="ph1" style="width:${(p.hw*100).toFixed(1)}%">${p.hw>.10?pct(p.hw):''}</div><div class="pd1" style="width:${(p.dr*100).toFixed(1)}%">${p.dr>.10?pct(p.dr):''}</div><div class="pa1" style="width:${(p.aw*100).toFixed(1)}%">${p.aw>.10?pct(p.aw):''}</div></div>
+  <div style="display:flex;gap:7px;margin-top:7px;font-size:.67rem;color:var(--t2);flex-wrap:wrap"><span>λ ${p.lT.toFixed(2)}</span><span>RMS ${(p.rms*100).toFixed(2)}</span><span>Vol ${p.volLabel}</span><span>${r.consistent?'✓':'⚠'}</span></div>
+  <div style="margin-top:9px;font-size:.82rem"><b>${esc(r.market.name)}</b> · ${pct(r.market.corrProb)} · odd ${od(r.market.useOdd||0)} · <span class="sub">${esc(r.message)}</span></div>
+  <div style="margin-top:9px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-g btn-sm" onclick="openEng('${g.id}')">Deep dive →</button></div></div>`;
+}
+function renderFix(){const up=byStatus('upcoming').slice().sort((a,b)=>new Date(a.start||0)-new Date(b.start||0));let h=`<div class="eyebrow">Upcoming</div><div class="h-sec">Fixtures · ${up.length}</div>`;if(!up.length){document.getElementById('tab-fixtures').innerHTML=h+empty('No upcoming fixtures','Add games in Input.','input','Go to input');return;}up.forEach(g=>h+=matchCard(g));document.getElementById('tab-fixtures').innerHTML=h;}
+function renderLive(){
+  const lv=byStatus('live').slice().sort((a,b)=>new Date(a.start)-new Date(b.start));
+  let h=`<div class="eyebrow">In play</div><div class="h-sec">Live · ${lv.length}</div>`;
+  if(!lv.length){document.getElementById('tab-live').innerHTML=h+empty('Nothing live','Games appear here at kickoff.','fixtures','See fixtures');return;}
+  lv.forEach(g=>{
+    const st=new Date(g.start).getTime(),el=Math.floor((Date.now()-st)/60000),rem=Math.max(0,MM-el),prog=Math.min(100,(el/MM)*100);
+    const p=getPred(g);if(!p)return;
+    h+=`<div class="mcard"><div class="mct">${crest(g.home)}<div class="vt">${esc(g.home)}<small>vs ${esc(g.away)} · ${esc(g.league||'—')}</small></div>${tierBadge(p.recommendation.tier)}${confBadge(p)}<span class="tag t-lv">${el}′ · ${rem}m</span></div>
+    <div style="height:6px;background:var(--s2);border-radius:6px;margin-top:10px;overflow:hidden"><div style="height:100%;width:${prog.toFixed(1)}%;background:var(--lv);transition:width 1s linear"></div></div>
+    <div style="margin-top:8px;font-size:.82rem"><b>${esc(p.recommendation.market.name)}</b> · ${esc(p.recommendation.message)}</div></div>`;
+  });
+  document.getElementById('tab-live').innerHTML=h;
+}
+
+/* ══════════════════════════════════════════════════════
+   ENGINE
+══════════════════════════════════════════════════════ */
+let engSel=null;
+function renderEng(){
+  let h=`<div class="eyebrow">Step 2 · Deep dive</div><div class="h-sec">Prediction Engine</div>
+  <div class="panel"><div class="field"><label>Find a game</label><div class="sb"><input id="esrch" placeholder="Type team name or #number" oninput="engSearch(this.value)" onfocus="engSearch(this.value)" autocomplete="off"><div id="eres" class="sr hidden"></div></div></div></div>
+  <div id="edet"></div>`;
+  document.getElementById('tab-engine').innerHTML=h;
+  if(engSel&&games.find(g=>g.id===engSel&&statusOf(g)!=='finished'))renderEngDet(engSel);
+  else document.getElementById('edet').innerHTML=empty('Pick a game','Search above to deep-dive any upcoming or live game.','','');
+}
+function engSearch(q){
+  const box=document.getElementById('eres'),list=analysable();q=q.trim().toLowerCase();
+  const m=q?list.filter(g=>String(games.indexOf(g)+1)===q||g.home.toLowerCase().includes(q)||g.away.toLowerCase().includes(q)):list;
+  if(!m.length){box.innerHTML=`<div style="padding:12px;font-size:.79rem;color:var(--t2)">No match for "${esc(q)}"</div>`;box.classList.remove('hidden');return;}
+  box.innerHTML=m.slice(0,10).map(g=>{const seq=games.indexOf(g)+1,s=statusOf(g);return`<button onclick="pickEng('${g.id}')"><span class="num">#${seq}</span>${crest(g.home)}<span style="flex:1"><b>${esc(g.home)}</b> v ${esc(g.away)}<br><small style="color:var(--t2)">${esc(g.league||'—')} · ${fmtDate(g.start)}</small></span>${s==='live'?'<span class="tag t-lv">LIVE</span>':'<span class="tag t-up">Up</span>'}</button>`;}).join('');
+  box.classList.remove('hidden');
+}
+function openEng(id){engSel=id;go('engine');setTimeout(()=>{const s=document.getElementById('esrch');if(s){s.value='';engSearch('');}},60);}
+function pickEng(id){engSel=id;const b=document.getElementById('eres');if(b)b.classList.add('hidden');const s=document.getElementById('esrch');if(s)s.value='';renderEngDet(id);}
+function renderEngDet(id){
+  const g=games.find(x=>x.id===id);if(!g)return;
+  const p=getPred(g),el=document.getElementById('edet');if(!p){el.innerHTML='';return;}
+  const r=p.recommendation,m=r.market;
+  const h2h=getH2H(g.home,g.away),h2hs=h2h.length?h2hStats(h2h,g.home,g.away):null;
+  let h=`<div class="panel"><div class="mct" style="margin-bottom:8px">${crest(g.home)}<div class="vt" style="font-size:.94rem">${esc(g.home)}<small>vs ${esc(g.away)} · ${esc(g.league||'—')} · ${fmtDate(g.start)}</small></div>${tierBadge(r.tier)}${confBadge(p)}</div>
+  <div class="pbar" style="height:34px"><div class="ph1" style="width:${(p.hw*100).toFixed(1)}%">Home ${pct(p.hw)}</div><div class="pd1" style="width:${(p.dr*100).toFixed(1)}%">Draw ${pct(p.dr)}</div><div class="pa1" style="width:${(p.aw*100).toFixed(1)}%">Away ${pct(p.aw)}</div></div>
+  <div style="display:flex;gap:7px;margin-top:10px;flex-wrap:wrap">
+    <span class="chip">λH ${p.l1.toFixed(3)}</span><span class="chip">λA ${p.l2.toFixed(3)}</span><span class="chip">ρ ${p.rho.toFixed(3)}</span><span class="chip">RMS ${(p.rms*100).toFixed(2)}</span><span class="chip">σ ${(p.sigma*100).toFixed(1)}%</span><span class="chip">Vol ${p.volLabel}</span><span class="chip">λΣ ${p.lT.toFixed(2)}</span>
+  </div></div>`;
+  h+=`<div class="panel"><div class="ph"><h3>Recommendation · min odd 1.30</h3></div>
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">${tierBadge(r.tier)}<span style="font-family:'Manrope';font-size:1.16rem;font-weight:800">${esc(m.name)}</span><span style="font-family:'Manrope';font-size:1.1rem;font-weight:800;color:var(--br)">${od(m.useOdd||m.bpOdd||m.estOdd)}</span>${r.consistent?'<span class="chip pos">✓ Consistent</span>':'<span class="chip neg">⚠ Flagged</span>'}</div>
+  <div style="margin-top:8px;font-size:.79rem;color:var(--t1)">${esc(r.message)}</div>
+  <div style="display:flex;gap:11px;margin-top:9px;font-size:.77rem;color:var(--t1);flex-wrap:wrap">
+    <span>Raw <b>${pct(m.rawProb)}</b></span><span>Corrected <b>${pct(m.corrProb)}</b></span><span>Fair <b>${od(m.fairOdd)}</b></span><span>Est <b>${od(m.estOdd)}</b></span>
+    ${m.fromInput?`<span>Your odd <b style="color:var(--br)">${od(m.bpOdd)}</b></span><span>EV <b class="${(m.realEV||0)>0?'wb':'lb'}">${((m.realEV||0)*100).toFixed(1)}%</b></span><span>½Kelly <b>${((m.halfKelly||0)*100).toFixed(1)}%</b></span>`:''}
+  </div></div>`;
+  h+=`<div class="panel"><div class="ph"><h3>Value meter</h3></div>${vmHtml(p.valueMeter)}</div>`;
+  h+=`<div class="panel"><div class="ph"><h3>Model diagnostics</h3></div><div class="dg">
+    <div class="dgi"><div class="k">λ Home</div><div class="v">${p.l1.toFixed(3)}</div></div>
+    <div class="dgi"><div class="k">λ Away</div><div class="v">${p.l2.toFixed(3)}</div></div>
+    <div class="dgi"><div class="k">Odds ratio</div><div class="v">${p.oddsRatio?p.oddsRatio.toFixed(2):'—'}</div><div class="s">implied</div></div>
+    <div class="dgi"><div class="k">ρ rho</div><div class="v">${p.rho.toFixed(3)}</div></div>
+    <div class="dgi"><div class="k">RMS fit</div><div class="v">${(p.rms*100).toFixed(2)}</div></div>
+    <div class="dgi"><div class="k">Confidence</div><div class="v">${p.confTier}</div></div>
+    <div class="dgi"><div class="k">Vol</div><div class="v">${p.volLabel}</div></div>
+    <div class="dgi"><div class="k">Odds used</div><div class="v">${4+p.nOpt}</div></div>
+  </div></div>`;
+  h+=`<div class="panel"><div class="ph"><h3>School corrections</h3><span class="sub">Active · transparent</span></div><div class="dg">${Object.entries(p.school.corrections).map(([k,v])=>`<div class="dgi"><div class="k">${k}</div><div class="v">${(v*100).toFixed(0)}%</div></div>`).join('')}</div></div>`;
+  // All markets table — sorted by corrProb, low-value markets dimmed
+  h+=`<div class="panel"><div class="ph"><h3>All markets</h3><span class="sub">Sorted by probability · min 1.30 for recommendation</span></div>
+  <div class="tsc"><table><thead><tr><th>Market</th><th>Raw</th><th>Corrected</th><th>Odd</th><th>EV</th><th>½Kelly</th><th>Fit%</th></tr></thead><tbody>
+  ${p.markets.slice().sort((a,b)=>b.corrProb-a.corrProb).map(mk=>`<tr${mk===r.market?' style="background:var(--gns)"':''}${mk.lowValue?' style="opacity:.45"':''}>
+    <td><b>${esc(mk.name)}</b>${mk===r.market?' <span class="tag tv" style="font-size:.5rem">REC</span>':''}${mk.lowValue?` <span class="tag" style="background:var(--ams);color:#5a3e00;font-size:.5rem">LOW VALUE</span>`:''}</td>
+    <td>${pct(mk.rawProb)}</td><td>${pct(mk.corrProb)}</td>
+    <td>${mk.fromInput?`<b>${od(mk.bpOdd)}</b> <span class="tag-y">R</span>`:`${od(mk.estOdd)} <span class="tag-e">E</span>`}</td>
+    <td>${mk.realEV!=null?`<span class="${mk.realEV>0?'wb':'lb'}">${(mk.realEV*100).toFixed(1)}%</span>`:'—'}</td>
+    <td>${mk.halfKelly!=null?(mk.halfKelly*100).toFixed(1)+'%':'—'}</td>
+    <td>${((mk.conScore||1)*100).toFixed(0)}%</td>
+  </tr>`).join('')}
+  </tbody></table></div></div>`;
+  h+=`<div class="panel"><div class="ph"><h3>Correct scores · Top 10 = ${pct(p.csMass)}</h3></div>${csBars(p.csList)}</div>`;
+  h+=`<div class="panel"><div class="ph"><h3>HT correct scores</h3><span class="sub">Tau-corrected · 45% λ</span></div>${csBars(p.htScores)}</div>`;
+  // H2H history
+  if(h2h.length){
+    const s=h2hs;
+    h+=`<div class="panel"><div class="ph"><h3>H2H History · ${h2h.length} matches</h3><span class="sub">Avg goals ${s.avgGoals} · ${g.home} wins ${s.hwPct}% · Draws ${s.drPct}% · ${g.away} wins ${s.awPct}%</span></div>`;
+    h2h.forEach(r=>{const hWin=r.hg>r.ag,aWin=r.ag>r.hg,dr=r.hg===r.ag;h+=`<div class="h2h-row">${crest(r.home)}<span style="font-size:.8rem;flex:1">${esc(r.home)} v ${esc(r.away)}<br><small style="color:var(--t2)">${fmtDate(r.date)}</small></span><span class="h2h-score">${r.hg} – ${r.ag}</span><span class="h2h-badge ${hWin?'dh':aWin?'dx':'dn2'}">${hWin?'H':aWin?'A':'D'}</span></div>`;});
+    h+=`</div>`;
+  } else {
+    h+=`<div class="panel"><div class="ph"><h3>H2H History</h3></div><p class="sub">No H2H data yet. After you grade matches they will appear here automatically.</p></div>`;
+  }
+  el.innerHTML=h;
+}
+
+/* ══════════════════════════════════════════════════════
+   FINAL ANALYSIS
+══════════════════════════════════════════════════════ */
+function renderFinal(){
+  const list=analysable().slice().sort((a,b)=>{const sa=statusOf(a)==='live'?0:1,sb=statusOf(b)==='live'?0:1;return sa-sb||new Date(a.start||0)-new Date(b.start||0);});
+  let h=`<div class="eyebrow">Full picture</div><div class="h-sec">Final Analysis · ${list.length}</div>`;
+  if(!list.length){document.getElementById('tab-final').innerHTML=h+empty('Nothing to analyse','Add upcoming games.','input','Add games');return;}
+  list.forEach(g=>{
+    const p=getPred(g);if(!p)return;
+    const r=p.recommendation;
+    const showMkts=p.markets.filter(m=>!m.name.startsWith('Correct Score')&&m.name!=='HT Over 0.5').sort((a,b)=>b.corrProb-a.corrProb);
+    h+=`<div class="mcard"><div class="mct">${crest(g.home)}<div class="vt">${esc(g.home)}<small>vs ${esc(g.away)} · ${esc(g.league||'—')} · ${fmtDate(g.start)}</small></div>${tierBadge(r.tier)}${confBadge(p)}</div>
+    <div style="display:flex;gap:7px;margin-top:6px;font-size:.66rem;color:var(--t2);flex-wrap:wrap"><span>H/D/A ${pct(p.hw)}/${pct(p.dr)}/${pct(p.aw)}</span><span>λ ${p.lT.toFixed(2)}</span><span>Vol ${p.volLabel}</span><span>RMS ${(p.rms*100).toFixed(2)}</span><span>${r.consistent?'✓':'⚠'}</span></div>
+    <div class="mg">${showMkts.map(mk=>`<div class="mk ${mk===r.market?'best':''} ${mk.fromInput&&(mk.realEV||0)>0?'vbrd':''} ${mk.lowValue?'warn-low':''}"><div class="mn">${esc(mk.name)}${mk===r.market?' ★':''} ${mk.fromInput?'<span class="tag-y">R</span>':'<span class="tag-e">E</span>'}${mk.lowValue?' ⚠':''}</div><div class="mp">${pct(mk.corrProb)}</div><div class="mo">${od(mk.useOdd||mk.estOdd)} · ${mk.fromInput?`EV ${((mk.realEV||0)*100).toFixed(1)}%`:'est'}</div></div>`).join('')}</div>
+    <div style="margin-top:10px"><div class="eyebrow" style="margin-bottom:5px">Top scores · ${pct(p.csMass)}</div>${csBars(p.csList.slice(0,5))}</div>
+    <div style="margin-top:9px;font-size:.8rem;color:var(--t1)"><b>${esc(r.market.name)}</b> · ${pct(r.market.corrProb)} · odd ${od(r.market.useOdd||0)} · ${esc(r.message)}</div>
+    <div style="margin-top:8px"><button class="btn btn-g btn-sm" onclick="openEng('${g.id}')">Deep dive →</button></div></div>`;
+  });
+  document.getElementById('tab-final').innerHTML=h;
+}
+
+/* ══════════════════════════════════════════════════════
+   BEST BET / ACCUMULATOR
+   Min odd 1.30 · uses model odds · any market eligible
+══════════════════════════════════════════════════════ */
+const MIN_LEG_ODD=1.30;
+function sameLeagueDay(a,b){return(a.start||'').slice(0,10)===(b.start||'').slice(0,10)&&(a.league||'').toLowerCase()===(b.league||'').toLowerCase()&&(a.league||'').length>0;}
+function getBestLegs(pred,minP,minO){
+  return pred.markets
+    .filter(m=>!m.lowValue&&m.corrProb>=minP&&(m.useOdd||m.estOdd)>=minO)
+    .sort((a,b)=>{
+      // Real entered positive EV markets first
+      const aEV=a.fromInput?(a.realEV||0):(a.corrProb*(a.useOdd||a.estOdd)-1);
+      const bEV=b.fromInput?(b.realEV||0):(b.corrProb*(b.useOdd||b.estOdd)-1);
+      if(aEV>0&&bEV<=0)return-1;if(bEV>0&&aEV<=0)return 1;
+      return b.corrProb-a.corrProb;
+    })
+    .slice(0,4)
+    .map(m=>({...m,useOdd:m.fromInput?m.bpOdd:m.estOdd}));
+}
+function findAcca(N,target,minO){
+  const cg=analysable().map(g=>({g,p:getPred(g)})).filter(x=>x.p);
+  const usable=cg.map((x,i)=>({i,g:x.g,legs:getBestLegs(x.p,Math.max(.40,.45),minO)})).filter(x=>x.legs.length);
+  if(usable.length<N)return{err:`Need ${N} games with eligible markets (odd ≥${od(minO)}). Only ${usable.length} available.`};
+  let beam=[{legs:[],last:-1,odd:1,prob:1,score:0,warn:false,realLegs:0}];
+  for(let step=0;step<N;step++){
+    const next=[];
+    beam.forEach(s=>{for(let i=s.last+1;i<usable.length;i++){const u=usable[i];u.legs.forEach(l=>{const warn=s.legs.some(x=>sameLeagueDay(x.g,u.g));const useOdd=l.fromInput?l.bpOdd:l.estOdd;const ev=l.fromInput?(l.realEV||0):(l.corrProb*useOdd-1);next.push({legs:[...s.legs,{g:u.g,m:l,useOdd}],last:i,odd:s.odd*useOdd,prob:s.prob*l.corrProb,score:s.score+l.corrProb+ev*.5,warn:s.warn||warn,realLegs:s.realLegs+(l.fromInput?1:0)});});}});
+    if(!next.length)break;
+    next.sort((a,b)=>b.score-a.score);
+    const seen=new Set();beam=[];
+    [...next.slice(0,400),...next.sort((a,b)=>Math.abs(b.odd-target)-Math.abs(a.odd-target)).slice(0,200)].forEach(s=>{const k=s.legs.map(l=>l.g.id+'|'+l.m.name).join('~');if(!seen.has(k)){seen.add(k);beam.push(s);}});
+  }
+  const full=beam.filter(s=>s.legs.length===N);
+  if(!full.length)return{err:'Cannot build accumulator with these settings. Try fewer legs or lower minimum odd.'};
+  const valid=full.filter(s=>s.odd>=target);
+  const pool=valid.length?valid.sort((a,b)=>b.score-a.score):full.sort((a,b)=>Math.abs(b.odd-target)-Math.abs(a.odd-target));
+  return{best:pool[0],met:valid.length>0,skipped:cg.length-usable.length};
+}
+let lastAcca=null;
+function renderBest(){
+  document.getElementById('tab-bestbet').innerHTML=`<div class="eyebrow">Step 3 · Accumulator</div><div class="h-sec">Best Bet Builder</div>
+  <div class="panel">
+    <div class="notice" style="margin-bottom:12px"><b>How it works:</b> The engine scores every market for every game. Markets below odd 1.30 are excluded (too low value). Any market — real or model-estimated — can be selected as long as math supports it. Real odds get priority when EV is positive.</div>
+    <div class="fg2">
+      <div class="field"><label>Legs (games)</label><input id="bb-n" type="number" min="1" max="12" value="2" inputmode="numeric"></div>
+      <div class="field"><label>Target odd</label><input id="bb-t" type="number" step="0.1" min="1.30" value="5.0" inputmode="decimal"></div>
+      <div class="field"><label>Min odd per leg</label><input id="bb-m" type="number" step="0.01" min="1.30" value="1.30" inputmode="decimal"></div>
+      <div class="field" style="justify-content:flex-end"><button class="btn btn-p btn-bl" onclick="runAcca()">Build best acca →</button></div>
+    </div>
+  </div>
+  <div id="bb-out"></div>`;
+  lastAcca=null;
+}
+function runAcca(){
+  const N=Math.max(1,Math.min(12,parseInt(document.getElementById('bb-n')?.value)||2));
+  const T=Math.max(1.30,parseFloat(document.getElementById('bb-t')?.value)||5.0);
+  const minO=Math.max(MIN_LEG_ODD,parseFloat(document.getElementById('bb-m')?.value)||MIN_LEG_ODD);
+  const out=document.getElementById('bb-out');if(!out)return;
+  const res=findAcca(N,T,minO);
+  if(res.err){out.innerHTML=`<div class="panel"><p class="sub" style="color:var(--rd)">⚠ ${esc(res.err)}</p></div>`;lastAcca=null;return;}
+  const b=res.best,acEV=(b.prob*b.odd-1)*100,rC=b.realLegs;
+  lastAcca={ts:Date.now(),target:T,N,combOdd:b.odd,combProb:b.prob,ev:b.prob*b.odd-1,warning:b.warn,legs:b.legs.map(l=>({gid:l.g.id,home:l.g.home,away:l.g.away,league:l.g.league,start:l.g.start,label:l.m.name,odd:l.useOdd,prob:l.m.corrProb,ev:l.m.fromInput?(l.m.realEV||0):(l.m.corrProb*l.useOdd-1),isReal:l.m.fromInput}))};
+  let h=`<div class="panel">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px">
+      <div><div class="eyebrow">${res.met?'🎯 Target met':'Closest match'} · ${rC}/${N} real odds</div><div style="font-family:'Manrope';font-size:1rem;font-weight:800">${N}-leg accumulator</div></div>
+      <div style="text-align:right"><div class="eyebrow">Combined odd</div><div style="font-family:'Manrope';font-size:2rem;font-weight:800;color:var(--br);line-height:1">${(+b.odd).toFixed(2)}</div></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+      <span class="chip pos">Win ${pct(b.prob)}</span>
+      <span class="chip ${acEV>0?'pos':'neg'}">Acca EV ${acEV.toFixed(1)}%</span>
+      <span class="chip">Target ${(+T).toFixed(2)}</span>
+      ${b.warn?'<span class="chip warn">⚠ Same-league legs</span>':''}
+      ${rC<N?`<span class="chip warn">${N-rC} estimated leg${N-rC>1?'s':''}</span>`:'<span class="chip pos">All real odds ✅</span>'}
+    </div>
+    <div class="divider"></div>`;
+  b.legs.forEach(l=>{
+    const legEV=(l.m.fromInput?(l.m.realEV||0):(l.m.corrProb*l.useOdd-1))*100;
+    h+=`<div class="aleg">${crest(l.g.home)}<div style="flex:1;min-width:0"><b>${esc(l.g.home)}</b> v ${esc(l.g.away)}<br><span class="sub">${esc(l.g.league||'—')} · ${fmtShort(l.g.start)}</span></div>
+    <div class="lm"><div style="font-size:.82rem;font-weight:700">${esc(l.m.name)}</div><div class="sub">${pct(l.m.corrProb)} · <b>${od(l.useOdd)}</b> ${l.m.fromInput?'<span class="tag-y">REAL</span>':'<span class="tag-e">EST</span>'} · EV <span class="${legEV>0?'wb':'lb'}">${legEV.toFixed(1)}%</span></div></div></div>`;
+  });
+  h+=`<div class="divider"></div><div class="notice" style="margin-top:0">REAL = your BetPawa odd. EST = model estimate — verify on BetPawa before placing.</div>
+  <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn btn-lk" onclick="lockAcca()">🔐 Lock accumulator</button><span id="lk-msg" class="sub" style="align-self:center"></span></div></div>`;
+  out.innerHTML=h;
+}
+function lockAcca(){
+  if(!lastAcca)return;
+  accas.push({...lastAcca,id:'acca'+Date.now()+Math.floor(Math.random()*999)});
+  save();buildNav();
+  const msg=document.getElementById('lk-msg');
+  if(msg){msg.innerHTML='🔐 Locked! <a href="#" onclick="trackerV=\'accas\';go(\'tracker\');return false">View in tracker</a>';msg.style.color='var(--gn)';}
+}
+
+/* ══════════════════════════════════════════════════════
+   TRACKER + SCHOOL (ROI by final prediction odd)
+══════════════════════════════════════════════════════ */
+function learnStats(){
+  const gr=games.filter(g=>statusOf(g)==='finished'&&results[g.id]?.hg!=null&&g.snapshot);
+  let rw=0,rs=0,x12w=0,x12n=0,tw=0,tn=0,bw=0,bn=0,dw=0,dn=0,mw=0,ms=0;
+  gr.forEach(g=>{
+    const r=results[g.id],p=getPred(g),snap=g.snapshot;if(!p||!snap)return;
+    const rec=evalMkt(snap.recommendation.market.name,r.hg,r.ag);
+    if(rec!=null){rs++;if(rec)rw++;}
+    p.markets.forEach(m=>{
+      if(m.corrProb>=.55){const res=evalMkt(m.name,r.hg,r.ag);if(res==null)return;ms++;if(res)mw++;
+        if(['Home Win','Draw','Away Win'].includes(m.name)){x12n++;if(res)x12w++;}
+        if(['Over 1.5','Under 1.5','Over 2.5','Under 2.5','Over 3.5','Under 3.5'].includes(m.name)){tn++;if(res)tw++;}
+        if(m.name.startsWith('BTTS')){bn++;if(res)bw++;}
+        if(m.name.startsWith('Double')){dn++;if(res)dw++;}
+      }
+    });
+  });
+  return{rw,rs,mw,ms,x12w,x12n,tw,tn,bw,bn,dw,dn};
+}
+/* ROI uses the actual predicted odd for each recommendation */
+function roiSim(){
+  const gr=games.filter(g=>statusOf(g)==='finished'&&results[g.id]?.hg!=null&&g.snapshot);
+  const stake=1000;let staked=0,ret=0;
+  const byTier={value:{b:0,w:0,pnl:0},highprob:{b:0,w:0,pnl:0},leastbad:{b:0,w:0,pnl:0}};
+  gr.forEach(g=>{
+    const r=results[g.id],s=g.snapshot,hit=evalMkt(s.recommendation.market.name,r.hg,r.ag);
+    if(hit==null)return;
+    staked+=stake;
+    // Use the actual predicted odd from snapshot (real or estimated)
+    const usedOdd=s.recommendation.market.fromInput?s.recommendation.market.bpOdd:s.recommendation.market.estOdd;
+    const tier=s.recommendation.tier;
+    if(byTier[tier]){byTier[tier].b++;if(hit){ret+=stake*usedOdd;byTier[tier].w++;byTier[tier].pnl+=stake*(usedOdd-1);}else byTier[tier].pnl-=stake;}
+  });
+  return{stake,graded:gr.length,staked,pnl:ret-staked,roi:staked?((ret-staked)/staked*100):0,byTier};
+}
+function gradeAcca(a){
+  let won=0,lost=0,pending=0;
+  const legs=a.legs.map(l=>{
+    const g=games.find(x=>x.id===l.gid);let state='pending';
+    if(g&&statusOf(g)==='finished'){const r=results[l.gid];if(r?.hg!=null){const e=evalMkt(l.label,r.hg,r.ag);state=e==null?'pending':e?'won':'lost';}}
+    if(state==='won')won++;else if(state==='lost')lost++;else pending++;
+    return{...l,state,score:results[l.gid]||null};
+  });
+  return{legs,won,lost,pending,status:lost>0?'lost':pending===0?'won':'pending'};
+}
+function accaStats(){let won=0,lost=0,settled=0,pending=0;accas.forEach(a=>{const g=gradeAcca(a);if(g.status==='won'){won++;settled++;}else if(g.status==='lost'){lost++;settled++;}else pending++;});return{won,lost,settled,pending};}
+function diagnose(g){
+  const r=results[g.id],s=g.snapshot;if(!r||!s)return null;
+  const hit=evalMkt(s.recommendation.market.name,r.hg,r.ag);
+  let diag=hit===true?'confirmed':s.rms<.08&&hit===false?'surprise':'expected';
+  const reasons=[];
+  if(s.rms>=.16)reasons.push('high RMS — model fit was poor');else if(s.rms<.08)reasons.push('low RMS — model was confident');
+  if(s.recommendation.tier==='leastbad')reasons.push('Tier 3 pick');
+  if(!s.recommendation.market.fromInput)reasons.push('estimated market');else reasons.push('real entered market');
+  if(!s.recommendation.consistent)reasons.push('flagged inconsistent');
+  return{hit,diagnosis:diag,reasons:reasons.join('; ')};
+}
+let trackerV='results';
+function renderAccas(aS){
+  let h=`<div class="tiles"><div class="tile brand"><div class="k">Win rate</div><div class="v">${aS.settled?pct(aS.won/aS.settled):'—'}</div><div class="m">${aS.won}/${aS.settled}</div></div><div class="tile"><div class="k">Won</div><div class="v" style="color:var(--gn)">${aS.won}</div></div><div class="tile"><div class="k">Lost</div><div class="v" style="color:var(--rd)">${aS.lost}</div></div><div class="tile"><div class="k">Pending</div><div class="v" style="color:var(--am)">${aS.pending}</div></div></div>`;
+  if(!accas.length)return h+empty('No locked accas','Build one in Best Bet.','bestbet','Build acca');
+  accas.slice().sort((a,b)=>b.ts-a.ts).forEach(a=>{
+    const G=gradeAcca(a),st=G.status==='won'?'<span class="tag t-won">🏆 WON</span>':G.status==='lost'?'<span class="tag t-lost">LOST</span>':'<span class="tag t-pend">PENDING</span>';
+    h+=`<div class="mcard"><div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px"><div><div style="font-family:'Manrope';font-weight:800">${a.N}-leg · ${od(a.combOdd)}</div><span class="sub">${G.won}/${a.legs.length} won · prob ${pct(a.combProb)} · EV ${(a.ev*100).toFixed(1)}%</span></div><div style="display:flex;gap:8px">${st}<button class="btn btn-d btn-sm" onclick="delAcca('${a.id}')">✕</button></div></div><div class="divider"></div>${G.legs.map(l=>{const badge=l.state==='won'?'<span class="dr dh">WON ✅</span>':l.state==='lost'?'<span class="dr dx">LOST ✗</span>':'<span class="dr dn2">pending</span>';return`<div class="aleg">${crest(l.home)}<div style="flex:1;min-width:0"><b>${esc(l.home)}</b> v ${esc(l.away)}<br><span class="sub">${esc(l.label)} · ${od(l.odd)}${l.score?` · ${l.score.hg}-${l.score.ag}`:''}</span></div><div class="lm">${badge}</div></div>`;}).join('')}</div>`;
+  });
+  return h;
+}
+function renderTracker(){
+  const fin=byStatus('finished').slice().sort((a,b)=>new Date(b.start)-new Date(a.start));
+  const L=learnStats(),aS=accaStats(),sch=SCHOOL(),roi=roiSim();
+  let h=`<div class="eyebrow">Step 4 · Results</div><div class="h-sec">Tracker</div>
+  <div class="seg"><button class="${trackerV==='results'?'active':''}" onclick="trackerV='results';renderTracker()">Results <span class="pill">${fin.length}</span></button><button class="${trackerV==='accas'?'active':''}" onclick="trackerV='accas';renderTracker()">🔐 Accas <span class="pill">${accas.length}</span></button></div>`;
+  if(trackerV==='accas'){h+=renderAccas(aS);document.getElementById('tab-tracker').innerHTML=h;return;}
+  h+=`<div class="tiles"><div class="tile brand"><div class="k">Rec hit rate</div><div class="v">${L.rs?pct(L.rw/L.rs):'—'}</div><div class="m">one bet/game</div></div><div class="tile"><div class="k">All picked</div><div class="v">${L.ms?pct(L.mw/L.ms):'—'}</div></div><div class="tile"><div class="k">Awaiting</div><div class="v">${fin.filter(g=>!results[g.id]||results[g.id].hg==null).length}</div></div></div>`;
+  h+=`<div class="tiles"><div class="tile"><div class="k">1X2</div><div class="v">${L.x12n?pct(L.x12w/L.x12n):'—'}</div><div class="m">${L.x12w}/${L.x12n}</div></div><div class="tile"><div class="k">Totals</div><div class="v">${L.tn?pct(L.tw/L.tn):'—'}</div><div class="m">${L.tw}/${L.tn}</div></div><div class="tile"><div class="k">BTTS</div><div class="v">${L.bn?pct(L.bw/L.bn):'—'}</div><div class="m">${L.bw}/${L.bn}</div></div><div class="tile"><div class="k">DC</div><div class="v">${L.dn?pct(L.dw/L.dn):'—'}</div><div class="m">${L.dw}/${L.dn}</div></div></div>`;
+  // ROI — using actual prediction odds
+  h+=`<div class="panel"><div class="ph"><h3>ROI Simulator</h3><span class="sub">One recommendation bet per game · actual prediction odd used</span></div>
+  <div class="dg"><div class="dgi"><div class="k">Stake</div><div class="v">UGX ${roi.stake.toLocaleString()}</div></div><div class="dgi"><div class="k">Graded</div><div class="v">${roi.graded}</div></div><div class="dgi"><div class="k">Staked</div><div class="v">${roi.staked.toLocaleString()}</div><div class="s">UGX</div></div><div class="dgi"><div class="k">P&L</div><div class="v" style="color:${roi.pnl>=0?'var(--gn)':'var(--rd)'}">${roi.pnl>=0?'+':''}${Math.round(roi.pnl).toLocaleString()}</div><div class="s">UGX</div></div><div class="dgi"><div class="k">ROI</div><div class="v" style="color:${roi.roi>=0?'var(--gn)':'var(--rd)'}">${roi.roi.toFixed(1)}%</div></div></div>
+  <div class="divider"></div><div class="dg">${Object.entries(roi.byTier).map(([k,v])=>`<div class="dgi"><div class="k">${k}</div><div class="v">${v.b?((v.w/v.b)*100).toFixed(0)+'%':'—'}</div><div class="s">ROI ${v.b?((v.pnl/(v.b*roi.stake))*100).toFixed(1):'—'}%</div></div>`).join('')}</div></div>`;
+  if(!fin.length){document.getElementById('tab-tracker').innerHTML=h+empty('No finished games yet','Games appear here after 115 min. Enter the score to teach the school.','fixtures','See fixtures');return;}
+  let trackerOpen=null;
+  fin.forEach(g=>{
+    const r=results[g.id]||{},done=r.hg!=null&&r.ag!=null,p=getPred(g),d=done&&g.snapshot?diagnose(g):null;
+    h+=`<div class="mcard"><div class="mct">${crest(g.home)}<div class="vt">${esc(g.home)}<small>vs ${esc(g.away)} · ${fmtDate(g.start)}</small></div><span class="tag t-fin">FT</span></div>`;
+    if(!done){
+      h+=`<div style="margin-top:12px;display:flex;align-items:center;gap:12px;flex-wrap:wrap"><span class="sub">Final score:</span><div class="ri"><input type="number" min="0" max="30" id="r-h-${g.id}" placeholder="0" inputmode="numeric"><span>:</span><input type="number" min="0" max="30" id="r-a-${g.id}" placeholder="0" inputmode="numeric"></div><button class="btn btn-p btn-sm" onclick="saveRes('${g.id}')">Grade</button></div>`;
+    } else {
+      const snap=g.snapshot,wonM=[],lostM=[];
+      if(p)p.markets.forEach(m=>{if(m.corrProb>=.55){const e=evalMkt(m.name,r.hg,r.ag);if(e===true)wonM.push(m);else if(e===false)lostM.push(m);}});
+      const rec=evalMkt(snap.recommendation.market.name,r.hg,r.ag);
+      const diagTag=d?.diagnosis==='confirmed'?'<span class="tag ch">✅ Confirmed</span>':d?.diagnosis==='surprise'?'<span class="tag cl">Surprise miss</span>':'<span class="tag cm">Expected miss</span>';
+      h+=`<div style="margin-top:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span style="font-family:'Manrope';font-size:1.38rem;font-weight:800">${r.hg} – ${r.ag}</span>${rec!=null?(rec?`<span class="chip pos">🏆 Rec won · ${esc(snap.recommendation.market.name)} · ${od(snap.recommendation.market.fromInput?snap.recommendation.market.bpOdd:snap.recommendation.market.estOdd)}</span>`:`<span class="chip neg">Rec lost · ${esc(snap.recommendation.market.name)}</span>`):''} ${tierBadge(snap.recommendation.tier)} ${diagTag}</div>
+      <div class="notice" style="margin-top:8px"><b>Diagnosis:</b> ${esc(d?.reasons||'—')}.</div>
+      <div style="margin-top:9px;display:flex;flex-wrap:wrap;gap:5px">${wonM.map(m=>`<span style="font-size:.68rem;font-weight:700;padding:3px 8px;border-radius:5px;background:var(--gns);color:var(--gn)">${esc(m.name)}</span>`).join('')}${lostM.map(m=>`<span style="font-size:.68rem;font-weight:700;padding:3px 8px;border-radius:5px;background:var(--rds);color:var(--rd)">${esc(m.name)}</span>`).join('')}</div>
+      <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-g btn-sm" onclick="editRes('${g.id}')">Edit score</button></div>`;
+    }
+    h+=`</div>`;
+  });
+  document.getElementById('tab-tracker').innerHTML=h;
+}
+function saveRes(id){const hv=parseInt(document.getElementById('r-h-'+id)?.value),av=parseInt(document.getElementById('r-a-'+id)?.value);if(isNaN(hv)||isNaN(av)||hv<0||av<0){alert('Enter valid scores');return;}results[id]={hg:hv,ag:av};save();renderTracker();buildNav();}
+function editRes(id){delete results[id];save();renderTracker();}
+function delAcca(id){accas=accas.filter(a=>a.id!==id);save();buildNav();renderTracker();}
+
+/* ══════════════════════════════════════════════════════
+   SCHOOL TAB — Professor view
+══════════════════════════════════════════════════════ */
+function renderSchool(){
+  const sch=SCHOOL(),roi=roiSim();
+  let h=`<div class="eyebrow">Professor of the system</div><div class="h-sec">📚 The School</div>`;
+  h+=`<div class="panel"><div class="ph"><h3>Learning status</h3><span class="sub">${sch.graded} games graded · corrections active after 5</span></div>
+  <div class="dg">${Object.entries(sch.corrections).map(([k,v])=>`<div class="dgi"><div class="k">${k}</div><div class="v" style="color:${v<.93?'var(--rd)':v>1.07?'var(--gn)':'var(--t0)'}">${(v*100).toFixed(0)}%</div><div class="s">${v<.93?'correcting down':v>1.07?'correcting up':'calibrated'}</div></div>`).join('')}</div></div>`;
+  h+=`<div class="panel"><div class="ph"><h3>Performance by tier</h3></div><div class="dg">
+    ${Object.entries(sch.tiers).map(([k,v])=>`<div class="dgi"><div class="k">${k}</div><div class="v">${v.b?((v.w/v.b)*100).toFixed(0)+'%':'—'}</div><div class="s">${v.b} bets · ROI ${v.b?((v.pnl/(v.b*1000))*100).toFixed(1):'—'}%</div></div>`).join('')}
+  </div></div>`;
+  if(sch.report.length)h+=`<div class="panel"><div class="ph"><h3>School report</h3><span class="sub">What the school has learned</span></div>${sch.report.map(x=>`<div class="sc-item"><b>${esc(x)}</b></div>`).join('')}</div>`;
+  if(sch.lessons.length){h+=`<div class="panel"><div class="ph"><h3>Recent lessons</h3><span class="sub">Events that updated the model</span></div>`;sch.lessons.forEach(l=>{h+=`<div class="sc-item"><b>${esc(l.text)}</b><small>${l.type==='confirm'?'✅ Confirmed value pick':'⚠ Surprise miss — updating weights'}</small></div>`;});h+=`</div>`;}
+  // H2H database
+  const h2hKeys=Object.keys(h2hDB);
+  if(h2hKeys.length){
+    h+=`<div class="panel"><div class="ph"><h3>H2H Database</h3><span class="sub">${h2hKeys.length} team pair${h2hKeys.length!==1?'s':''} · up to 20 matches each</span></div>`;
+    h2hKeys.slice(0,10).forEach(k=>{
+      const records=h2hDB[k];if(!records?.length)return;
+      const names=k.replace(/__/g,' v ').replace(/_/g,' ');
+      h+=`<div class="sc-item"><b>${esc(names)}</b><small>${records.length} matches recorded · last: ${records[0]?.hg}–${records[0]?.ag}</small></div>`;
+    });
+    if(h2hKeys.length>10)h+=`<p class="sub" style="padding:8px 0">+ ${h2hKeys.length-10} more pairs in memory</p>`;
+    h+=`</div>`;
+  }
+  if(!sch.graded&&!h2hKeys.length)h+=empty('School is empty','Add games, grade results, and the school starts teaching itself.','input','Add games');
+  document.getElementById('tab-school').innerHTML=h;
+}
+
+/* ══════════════════════════════════════════════════════
+   RESET
+══════════════════════════════════════════════════════ */
+let resetAtt=0;
+function curPwd(){const s=new Date().toLocaleTimeString('en-US',{timeZone:'Africa/Kampala',hour12:true,hour:'numeric',minute:'2-digit'});const m=s.match(/(\d+):(\d+)/);return m?m[1]+m[2]:'';}
+function lockRem(){const l=+localStorage.getItem(LK)||0;return Math.max(0,l-Date.now());}
+function openReset(){const root=document.getElementById('mroot'),rem=lockRem();if(rem>0){root.innerHTML=lockedM(rem);return;}resetAtt=0;root.innerHTML=resetM(0);setTimeout(()=>document.getElementById('rpwd')?.focus(),60);}
+function resetM(u){return`<div class="mo" onclick="if(event.target===this)closeM()"><div class="mo-box" id="rbox"><h3>⟲ Reset system</h3><p>Deletes <b>all games, results, H2H data and accas</b>. Enter your current EAT time (e.g. 843 for 8:43 AM).</p><div class="field"><label>Passcode</label><input id="rpwd" type="password" inputmode="numeric" placeholder="• • •" onkeydown="if(event.key==='Enter')tryR()"></div><div class="dots">${[0,1,2].map(i=>`<div class="dot ${i<u?'used':''}"></div>`).join('')}</div><div id="rmsg" class="sub" style="min-height:18px;color:var(--rd)"></div><div class="moa"><button class="btn btn-g" onclick="closeM()">Cancel</button><button class="btn btn-d" onclick="tryR()">Delete all</button></div></div></div>`;}
+function lockedM(rem){const m=Math.ceil(rem/60000);return`<div class="mo" onclick="if(event.target===this)closeM()"><div class="mo-box" style="text-align:center"><div style="font-size:3rem;animation:spin 1.4s linear infinite;display:inline-block">🤡</div><h3 style="margin-top:10px">Locked out</h3><p>Three wrong tries. Try again in <b>${m} min</b>.</p><div class="moa"><button class="btn btn-g" onclick="closeM()">OK</button></div></div></div>`;}
+function tryR(){
+  const box=document.getElementById('rbox'),msg=document.getElementById('rmsg'),inp=document.getElementById('rpwd');if(!inp)return;
+  if(inp.value.trim()===curPwd()){
+    [GK,RK,AK,H2HK].forEach(k=>localStorage.removeItem(k));
+    pCache.clear();games=[];results={};accas={};h2hDB={};accas=[];
+    save();closeM();buildNav();go('dashboard');return;
+  }
+  resetAtt++;
+  if(resetAtt>=3){localStorage.setItem(LK,String(Date.now()+10*60000));box.classList.add('tumble');setTimeout(()=>{document.getElementById('mroot').innerHTML=lockedM(10*60000);},700);return;}
+  box.classList.remove('shake');void box.offsetWidth;box.classList.add('shake');
+  if(msg)msg.textContent=3-resetAtt===1?'Wrong. Last try before lockout 😬':`Wrong. ${3-resetAtt} tries left.`;
+  const dots=box.querySelector('.dots');if(dots)dots.innerHTML=[0,1,2].map(i=>`<div class="dot ${i<resetAtt?'used':''}"></div>`).join('');
+  inp.value='';inp.focus();
+}
+function closeM(){document.getElementById('mroot').innerHTML='';}
+
+/* ══════════════════════════════════════════════════════
+   BOOT
+══════════════════════════════════════════════════════ */
+function tick(){const el=document.getElementById('clk');if(el)el.textContent=new Date().toLocaleTimeString('en-GB',{timeZone:'Africa/Kampala'});}
+setInterval(tick,1000);tick();
+// 15-second status-only refresh — never reruns model math
+let lastSnap='';
+setInterval(()=>{
+  const snap=games.map(g=>g.id+statusOf(g)).join(',');
+  if(snap!==lastSnap){lastSnap=snap;ensureSnaps();buildNav();if(['dashboard','fixtures','live','tracker','final','engine','school'].includes(currentTab))render(currentTab);}
+  else if(currentTab==='live'&&byStatus('live').length)render('live');
+},15000);
+ensureSnaps();buildNav();renderDash();lastSnap=games.map(g=>g.id+statusOf(g)).join(',');
+</script>
+</body>
+</html>
